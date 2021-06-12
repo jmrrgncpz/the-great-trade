@@ -1,4 +1,3 @@
-// import { describe } from '@jest/types/node_modules/@types/yargs';
 import React from "react";
 import renderer from "react-test-renderer";
 import CategorySelectionView from "../CategorySelectionView";
