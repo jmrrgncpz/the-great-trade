@@ -1,0 +1,22 @@
+{
+  "strict": {
+    "text-font-size": 16,
+    "text-font-family": "Lato-Regular",
+
+    "text-heading-1-font-family": "Montserrat-SemiBold",
+    "text-heading-1-font-size": 36,
+    "text-heading-2-font-family": "Montserrat-SemiBold",
+    "text-heading-2-font-size": 24,
+    "text-heading-3-font-family": "Montserrat-SemiBold",
+    "text-heading-3-font-size": 18,
+    "text-heading-4-font-family": "Montserrat-SemiBold",
+    "text-heading-4-font-size": 16,
+    "text-heading-5-font-family": "Montserrat-SemiBold",
+    "text-heading-5-font-size": 12,
+    "text-heading-6-font-family": "Montserrat-SemiBold",
+    "text-heading-6-font-size": 10,
+
+    "text-caption-1-font-family": "Lato-Bold",
+    "text-caption-2-font-family": "Lato-Bold"
+  }
+}
