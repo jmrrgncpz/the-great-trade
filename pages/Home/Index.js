@@ -53,7 +53,9 @@ const Home = () => {
         name="ConditionSelectionView"
         component={ConditionSelectionView}
       />
-      <Stack.Screen name="DetailsView" component={DetailsView} />
+      <Stack.Screen name="DetailsView">
+        { (props) => <DetailsView {...props} onNextPressed={() => props.navigation.navigate('AdditionalInfoView')} /> }
+      </Stack.Screen>
       <Stack.Screen name="AdditionalInfoView" component={AdditionalInfoView} />
       <Stack.Screen name="NewItemImagesView" component={NewItemImagesView} />
       <Stack.Screen name="SummaryView" component={SummaryView} />

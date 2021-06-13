@@ -10,9 +10,12 @@
     "testDebug": "jest -o --watch --coverage=false"
   },
   "jest": {
-    "preset": "jest-expo",
+    "preset": "react-native",
+    "setupFilesAfterEnv": [
+      "@testing-library/jest-native/extend-expect"
+    ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*|@fortawesome/react-native-fontawesome|@ui-kitten/.*)"
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*|@fortawesome/react-native-fontawesome|@ui-kitten/components)"
     ]
   },
   "dependencies": {
@@ -47,7 +50,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
-    "@testing-library/react-native": "^7.2.0",
+    "@testing-library/jest-native": "^4.0.1",
+    "@testing-library/react-native": "7.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "jest-expo": "^41.0.0",
     "react-test-renderer": "^17.0.2"

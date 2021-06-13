@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CategorySelectionView displays 7 categories 1`] = `
+exports[`CategorySelectionView renders correctly  1`] = `
 <View
   style={
     Object {
@@ -20,8 +20,6 @@ exports[`CategorySelectionView displays 7 categories 1`] = `
         Object {
           "display": "flex",
           "flex": 1,
-          "paddingLeft": 0,
-          "paddingRight": 0,
         },
       ]
     }
@@ -47,8 +45,7 @@ exports[`CategorySelectionView displays 7 categories 1`] = `
                 "fontWeight": "800",
               },
               Object {
-                "fontSize": 36,
-                "marginBottom": 36,
+                "marginBottom": 24,
                 "marginLeft": 25,
               },
             ]
@@ -84,7 +81,6 @@ exports[`CategorySelectionView displays 7 categories 1`] = `
                   "fontWeight": "800",
                 },
                 Object {
-                  "fontSize": 24,
                   "marginBottom": 8,
                   "marginLeft": 25,
                 },
@@ -680,7 +676,6 @@ exports[`CategorySelectionView displays 7 categories 1`] = `
                   "fontWeight": "800",
                 },
                 Object {
-                  "fontSize": 24,
                   "marginBottom": 8,
                   "marginLeft": 25,
                 },
@@ -1008,7 +1003,6 @@ exports[`CategorySelectionView displays 7 categories 1`] = `
                   "fontWeight": "800",
                 },
                 Object {
-                  "fontSize": 24,
                   "marginBottom": 8,
                   "marginLeft": 25,
                 },
@@ -1604,7 +1598,6 @@ exports[`CategorySelectionView displays 7 categories 1`] = `
                   "fontWeight": "800",
                 },
                 Object {
-                  "fontSize": 24,
                   "marginBottom": 8,
                   "marginLeft": 25,
                 },
@@ -2200,7 +2193,6 @@ exports[`CategorySelectionView displays 7 categories 1`] = `
                   "fontWeight": "800",
                 },
                 Object {
-                  "fontSize": 24,
                   "marginBottom": 8,
                   "marginLeft": 25,
                 },
@@ -2528,7 +2520,6 @@ exports[`CategorySelectionView displays 7 categories 1`] = `
                   "fontWeight": "800",
                 },
                 Object {
-                  "fontSize": 24,
                   "marginBottom": 8,
                   "marginLeft": 25,
                 },
@@ -3392,7 +3383,6 @@ exports[`CategorySelectionView displays 7 categories 1`] = `
                   "fontWeight": "800",
                 },
                 Object {
-                  "fontSize": 24,
                   "marginBottom": 8,
                   "marginLeft": 25,
                 },
