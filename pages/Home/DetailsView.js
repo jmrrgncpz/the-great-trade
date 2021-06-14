@@ -9,6 +9,8 @@ import { Platform } from "react-native";
 const DetailsView = ({ navigation, onNextPressed }) => {
   const [itemName, setItemName] = useState("");
   const [itemDescription, setItemDescription] = useState("");
+  const [isDescriptionHintVisible, setIsDescriptionHintVisible] =
+    useState(false);
 
   const ChevronRight = (props) => (
     <Icon {...props} name="chevron-right-outline" />
@@ -28,9 +30,10 @@ const DetailsView = ({ navigation, onNextPressed }) => {
           </Text>
           <Input
             style={{ marginBottom: 24 }}
+            accessibilityLabel="item name input"
             placeholder="Name"
             value={itemName}
-            onChangeText={newItemName => setItemName(newItemName)}
+            onChangeText={(newItemName) => setItemName(newItemName)}
           ></Input>
 
           <Text style={{ fontSize: 16, marginBottom: 12, letterSpacing: 0.8 }}>
@@ -38,16 +41,26 @@ const DetailsView = ({ navigation, onNextPressed }) => {
             warranty, issues/flaws, etc.
           </Text>
           <Input
-            multiline={true}
             customTextStyle={{
               textAlignVertical: "top",
               minHeight: 120,
               paddingTop: 16,
             }}
+            accessibilityLabel="item description input"
             placeholder="Description"
             value={itemDescription}
-            onChangeText={newItemDescription => setItemDescription(newItemDescription)}
+            onChangeText={(newItemDescription) =>
+              setItemDescription(newItemDescription)
+            }
+            onBlur={() =>
+              itemDescription.length > 5
+                ? setIsDescriptionHintVisible(true)
+                : setIsDescriptionHintVisible(false)
+            }
           ></Input>
+          {isDescriptionHintVisible ? (
+            <Text status="danger">Tell us more about this item.</Text>
+          ) : null}
 
           <Button
             accessibilityLabel="next button"
@@ -55,7 +68,7 @@ const DetailsView = ({ navigation, onNextPressed }) => {
             style={{ marginTop: "auto" }}
             onPress={onNextPressed}
             accessoryRight={ChevronRight}
-            disabled={ itemName.length && itemDescription.length <= 5}
+            disabled={!(itemName.length > 0 && itemDescription.length > 5)}
           >
             Next
           </Button>
