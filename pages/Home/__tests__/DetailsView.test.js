@@ -24,9 +24,8 @@ describe("DetailsView", () => {
       </>
     );
 
-    const x = getByA11yLabel('next button');
     fireEvent.changeText(getByPlaceholderText('Name'), 'IPHONE10');
-    fireEvent.press(x);
+    fireEvent.press(getByA11yLabel('next button'));
 
     expect(onNextPressedMock).not.toHaveBeenCalled();
   });
