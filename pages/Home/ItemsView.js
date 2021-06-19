@@ -31,7 +31,7 @@ const ItemsList = ({ navigation }) => {
             <Text status="info" style={{ fontSize: 24, marginBottom: 12 }}>
               Wow, nothing's here.
             </Text>
-            <Button onPress={() => navigation.navigate("CategorySelectionView")}>Add an Item</Button>
+            <Button onPress={() => navigation.navigate("NewItemPage")}>Add an Item</Button>
           </Layout>
         )}
       </Layout>

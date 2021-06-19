@@ -10,7 +10,7 @@ import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { useFonts } from "expo-font";
 import AppLoading from "expo-app-loading";
 import * as Facebook from "expo-facebook";
-import { NavigationContainer, StackActions } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import {
   CardStyleInterpolators,
   createStackNavigator,
@@ -18,16 +18,16 @@ import {
 import * as eva from "@eva-design/eva";
 import { default as theme } from "./custom-theme.json";
 import { default as mapping } from "./mapping.json";
-import { registerIcons } from './fontawesome';
+import { registerIcons } from "./fontawesome";
 
-registerIcons();
-
-// Pages
-import Landing from "./pages/Registration/Landing";
+// Main Pages
 import Main from "./Main";
+import CameraView from "./pages/Home/NewItem/NewItemImagesView/CameraView";
+
+// Registration Pages
+import Landing from "./pages/Registration/Landing";
 import RegisterPhoneNumberView from "./pages/Registration/RegisterPhoneNumber";
 import ConfirmPhoneNumberView from "./pages/Registration/ConfirmPhoneNumber";
-
 export default function App() {
   const [fontsLoaded] = useFonts({
     "Montserrat-SemiBold": require("./assets/fonts/Montserrat-SemiBold.ttf"),
@@ -35,7 +35,9 @@ export default function App() {
     "Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
   });
   const [isFBReady, setIsFBReady] = useState(false);
+
   useEffect(() => {
+    registerIcons();
     Facebook.initializeAsync({
       appId: "1039613316566966",
       appName: "The Great Trade",
@@ -44,7 +46,8 @@ export default function App() {
     });
   }, []);
 
-  const Stack = createStackNavigator();
+  const RegistrationStack = createStackNavigator();
+  const MainStack = createStackNavigator();
   const AuthContext = React.createContext();
   const [state, dispatch] = useReducer(
     (prevState, action) => {
@@ -84,45 +87,38 @@ export default function App() {
       >
         {/* <AuthContext.Provider value={authContext}> */}
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            {state.isSignedIn ? (
-              <Stack.Screen
-                name="Main"
-                component={Main}
+          {state.isSignedIn ? (
+            <MainStack.Navigator
+              screenOptions={{ headerShown: false }}
+              mode="modal"
+            >
+              <MainStack.Screen name="Main" component={Main} />
+              <MainStack.Screen
+                name="CameraView"
+                component={CameraView}
                 options={{
-                  cardStyleInterpolator:
-                    CardStyleInterpolators.forHorizontalIOS,
+                  cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
                 }}
               />
-            ) : (
-              <>
-                <Stack.Screen
-                  name="Landing"
-                  component={Landing}
-                  options={{
-                    cardStyleInterpolator:
-                      CardStyleInterpolators.forHorizontalIOS,
-                  }}
-                />
-                <Stack.Screen
-                  name="RegisterPhoneNumber"
-                  component={RegisterPhoneNumberView}
-                  options={{
-                    cardStyleInterpolator:
-                      CardStyleInterpolators.forHorizontalIOS,
-                  }}
-                />
-                <Stack.Screen
-                  name="ConfirmPhoneNumber"
-                  component={ConfirmPhoneNumberView}
-                  options={{
-                    cardStyleInterpolator:
-                      CardStyleInterpolators.forHorizontalIOS,
-                  }}
-                />
-              </>
-            )}
-          </Stack.Navigator>
+            </MainStack.Navigator>
+          ) : (
+            <RegistrationStack.Navigator
+              screenOptions={{
+                headerShown: false,
+                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+              }}
+            >
+              <RegistrationStack.Screen name="Landing" component={Landing} />
+              <RegistrationStack.Screen
+                name="RegisterPhoneNumber"
+                component={RegisterPhoneNumberView}
+              />
+              <RegistrationStack.Screen
+                name="ConfirmPhoneNumber"
+                component={ConfirmPhoneNumberView}
+              />
+            </RegistrationStack.Navigator>
+          )}
         </NavigationContainer>
         {/* </AuthContext.Provider> */}
       </ApplicationProvider>

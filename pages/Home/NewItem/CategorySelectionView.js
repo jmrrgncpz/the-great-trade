@@ -133,7 +133,6 @@ const CategorySelectionView = ({ navigation }) => {
     },
   ];
 
-  const [selectedCategory, setSelectedCategory] = useState("");
   const styles = useStyleSheet(themedStyles)
 
   const Subcategory = ({ icon, name }) => (
@@ -151,7 +150,7 @@ const CategorySelectionView = ({ navigation }) => {
         borderWidth: 0,
         marginRight: 12,
       }}
-      onPress={() => navigation.navigate('ConditionSelectionView')}
+      onPress={() => navigation.navigate('ConditionSelectionView', { category: { name }})}
       accessoryLeft={() => (
         <FontAwesomeIcon
           color="rgb(2, 152, 239)"

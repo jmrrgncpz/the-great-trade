@@ -8,9 +8,9 @@ import {
   Icon,
 } from "@ui-kitten/components";
 import React, { useState } from "react";
-import FloatingMonitor from "../../components/floating-monitor";
+import FloatingMonitor from "../../../components/floating-monitor";
 
-const ConditionSelectionView = ({ navigation }) => {
+const ConditionSelectionView = ({ navigation, route }) => {
   const theme = useTheme();
   const conditions = [
     {
@@ -97,7 +97,7 @@ const ConditionSelectionView = ({ navigation }) => {
       <Button
         style={{ marginTop: "auto" }}
         size="giant"
-        onPress={() => navigation.navigate("DetailsView")}
+        onPress={() => navigation.navigate("DetailsView", { ...route.params, condition: selectedCondition })}
         accessoryRight={(props) => (
           <Icon {...props} name="chevron-right-outline"></Icon>
         )}
