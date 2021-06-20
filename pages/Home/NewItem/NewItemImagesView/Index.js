@@ -25,7 +25,6 @@ const NewItemImagesStack = createStackNavigator();
 const NewItemImagesView = ({ navigation, route }) => {
   const theme = useTheme();
   const [images, setImages] = useState([]);
-  const [pageIndex, setPageIndex] = useState(0);
   const pagerRef = useRef(null);
   const window = useWindowDimensions();
 

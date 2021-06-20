@@ -28,6 +28,7 @@ const CameraView = ({ navigation, route }) => {
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === "granted");
+      setIsCameraInitiating(false);
     })();
   }, []);
 
@@ -56,6 +57,12 @@ const CameraView = ({ navigation, route }) => {
       photo: croppedPhoto,
     });
   };
+
+  if (isCameraInitiating) {
+    return <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Icon fill='white' name="camera-outline" style={{ width: 200, height: 200 }} />
+    </Layout>;
+  }
 
   if (hasPermission === null || hasPermission === false) {
     return (
@@ -112,14 +119,11 @@ const CameraView = ({ navigation, route }) => {
               accessoryLeft={(props) => (
                 <Icon {...props} name="close-outline" />
               )}
+              onPress={() => navigation.goBack()}
             />
           </View>
           <View style={styles.buttonContainer}>
-            <TouchableNativeFeedback
-              style={styles.snapButton}
-              onPress={snap}
-              disabled={isCameraInitiating}
-            >
+            <TouchableNativeFeedback style={styles.snapButton} onPress={snap}>
               <View style={styles.snapButtonInner} />
             </TouchableNativeFeedback>
           </View>
