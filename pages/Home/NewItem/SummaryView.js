@@ -7,7 +7,7 @@ import {
   StyleService,
   useStyleSheet,
 } from "@ui-kitten/components";
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   TouchableOpacity,
@@ -15,6 +15,7 @@ import {
   Dimensions,
   StyleSheet,
   useWindowDimensions,
+  Platform,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import PreferredItem from "../../../components/preferred-item";
@@ -23,26 +24,59 @@ import PagerView from "react-native-pager-view";
 const Page = ({ navigation, route }) => {
   const styles = useStyleSheet(themeStyles);
   const window = useWindowDimensions();
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const onPageSelected = (e) => {
+    setSelectedImageIndex(e.nativeEvent.position);
+  }
 
   return (
     <ScrollView>
       <Layout level="2" style={[styles.container]}>
-        <PagerView
-          style={{ height: window.width - 25, width: window.width - 25}}
+        <View
+          style={{
+            height: window.width - 50,
+            width: window.width - 50,
+            overflow: "hidden",
+            borderRadius: 12,
+            marginBottom: 24,
+          }}
         >
-          {images.map((image, i) => (
-            <View
-              key={`${i + 1}`}
-              style={{ justifyContent: "center", alignItems: "center" }}
+          <PagerView
+            style={{ width: "100%", height: "100%" }}
+            showPageIndicator={true}
+            onPageSelected={onPageSelected}
+          >
+            {route.params.images.map((image, i) => (
+              <View
+                key={`${i + 1}`}
+                style={{ justifyContent: "center", alignItems: "center" }}
+              >
+                <Image
+                  resizeMode="cover"
+                  style={{ width: "100%", flex: 1 }}
+                  source={{ uri: image.uri }}
+                />
+              </View>
+            ))}
+          </PagerView>
+          {Platform.OS === "ios" ? null : (
+            <Text
+              category="c1"
+              style={{
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                left: 0,
+                textAlign: "center",
+                backgroundColor: "rgba(0,0,0, 0.7)",
+                color: "white",
+                padding: 12,
+              }}
             >
-              <Image
-                resizeMode="cover"
-                style={{ width: "100%", flex: 1 }}
-                source={{ uri: image.uri }}
-              />
-            </View>
-          ))}
-        </PagerView>
+             { selectedImageIndex + 1 } / {route.params.images.length}
+            </Text>
+          )}
+        </View>
 
         <View style={[styles.itemHeader, styles.stackItem]}>
           <View>
