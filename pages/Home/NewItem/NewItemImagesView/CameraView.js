@@ -12,7 +12,10 @@ import {
 } from "@ui-kitten/components";
 import { Camera } from "expo-camera";
 import { useWindowDimensions, View, Image } from "react-native";
-import { TouchableNativeFeedback } from "react-native-gesture-handler";
+import {
+  TouchableNativeFeedback,
+  TouchableOpacity,
+} from "react-native-gesture-handler";
 
 const CameraView = ({ navigation, route }) => {
   const window = useWindowDimensions();
@@ -23,6 +26,7 @@ const CameraView = ({ navigation, route }) => {
   const [isCameraInitiating, setIsCameraInitiating] = useState(true);
   const [isPhotoSaving, setIsPhotoSaving] = useState(false);
   const [photo, setPhoto] = useState(null);
+  const [isFlashEnabled, setIsFlashEnabled] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -59,9 +63,17 @@ const CameraView = ({ navigation, route }) => {
   };
 
   if (isCameraInitiating) {
-    return <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Icon fill='white' name="camera-outline" style={{ width: 200, height: 200 }} />
-    </Layout>;
+    return (
+      <Layout
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <Icon
+          fill="white"
+          name="camera-outline"
+          style={{ width: 200, height: 200 }}
+        />
+      </Layout>
+    );
   }
 
   if (hasPermission === null || hasPermission === false) {
@@ -82,6 +94,11 @@ const CameraView = ({ navigation, route }) => {
           width: window.width,
           height: window.height,
         }}
+        flashMode={
+          isFlashEnabled
+            ? Camera.Constants.FlashMode.on
+            : Camera.Constants.FlashMode.off
+        }
         ratio="16:9"
         type={Camera.Constants.Type.back}
         onCameraReady={() => setIsCameraInitiating(false)}
@@ -90,9 +107,14 @@ const CameraView = ({ navigation, route }) => {
       {/* Interface Container */}
       <View style={styles.interfaceContainer}>
         {/* Camera Header */}
-        <View
-          style={[styles.cameraHeader, styles.cameraInterfaceContainer]}
-        ></View>
+        <View style={[styles.cameraHeader, styles.cameraInterfaceContainer]}>
+          <TouchableOpacity onPress={() => setIsFlashEnabled(!isFlashEnabled)} style={{ height: 24, width: 24}}>
+            <Icon
+              fill="#fff"
+              name={isFlashEnabled ? "flash-outline" : "flash-off-outline"}
+            />
+          </TouchableOpacity>
+        </View>
 
         {/* Capture Area */}
         <View
@@ -155,6 +177,9 @@ const themedStyles = StyleService.create({
   },
   cameraHeader: {
     height: "10%",
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12
   },
   captureArea: {
     backgroundColor: "transparent",
