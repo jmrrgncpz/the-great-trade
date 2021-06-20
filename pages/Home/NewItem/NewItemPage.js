@@ -12,7 +12,7 @@ import CategorySelectionView from "./CategorySelectionView";
 import ConditionSelectionView from "./ConditionSelectionView";
 import DetailsView from "./DetailsView";
 import AdditionalInfoView from "./AdditionalInfoView";
-import NewItemImagesView from "./NewItemImagesView/Index";
+import NewItemImagesView from "./PhotoSelectorView";
 import SummaryView from "./SummaryView";
 
 // components
@@ -56,11 +56,6 @@ const NewItemPage = () => {
       <ItemCreationStack.Screen
         name="NewItemImagesView"
         component={NewItemImagesView}
-        options={({ route }) => {
-          headerShown: getFocusedRouteNameFromRoute(route) == "CameraView"
-            ? true
-            : false;
-        }}
       />
       <ItemCreationStack.Screen name="SummaryView" component={SummaryView} />
     </ItemCreationStack.Navigator>

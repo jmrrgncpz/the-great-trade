@@ -9,6 +9,7 @@ import {
   useTheme,
 } from "@ui-kitten/components";
 import { View, Image, ScrollView } from "react-native";
+import * as ImagePicker from 'expo-image-picker';
 
 export const NewItemImagesContext = createContext();
 const NewItemImagesView = ({ navigation, route }) => {
@@ -17,14 +18,44 @@ const NewItemImagesView = ({ navigation, route }) => {
   const [images, setImages] = useState([]);
   const [imagesContainerWidth, setImagesContainerWidth] = useState(0);
   const [imagesContainerHeight, setImagesContainerHeight] = useState(0);
+
   useEffect(() => {
-    const hasParams = route.params;
-    if (hasParams) {
-      setImages(route.params.images || []);
-    } else {
-      setImages([]);
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.5,
+      allowsMultipleSelection: true
+    })
+
+    if(!result.cancelled){
+      setImages([...images, result]);
     }
-  }, [route]);
+  }
+
+  const launchCamera = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [1,1],
+      quality: 0.5
+    })
+
+    if (!result.cancelled){
+      setImages([...images, result]);
+    }
+  }
 
   return (
     <Layout level="2" style={{ flex: 1 }}>
@@ -68,7 +99,7 @@ const NewItemImagesView = ({ navigation, route }) => {
           </ScrollView>
         ) : (
           <Image
-            source={require("../../../../assets/images/Images-rafiki.png")}
+            source={require("../../../assets/images/Images-rafiki.png")}
             resizeMode="contain"
             style={{ flex: 1, alignSelf: "center" }}
           ></Image>
@@ -87,8 +118,9 @@ const NewItemImagesView = ({ navigation, route }) => {
             accessoryLeft={(props) => (
               <Icon {...props} name="image-outline"></Icon>
             )}
+            onPress={pickImage}
           >
-            Upload photos
+            Upload a photo
           </Button>
 
           <Button
@@ -96,7 +128,7 @@ const NewItemImagesView = ({ navigation, route }) => {
             appearance="outline"
             size="large"
             style={{ flex: 1 }}
-            onPress={() => navigation.navigate("CameraView", { images })}
+            onPress={launchCamera}
             accessoryLeft={(props) => (
               <Icon {...props} name="camera-outline"></Icon>
             )}
@@ -109,7 +141,7 @@ const NewItemImagesView = ({ navigation, route }) => {
       <Button
         size="giant"
         style={{ marginTop: "auto", marginHorizontal: 25 }}
-        onPress={() => navigation.navigate("SummaryView", { ...route.params })}
+        onPress={() => navigation.navigate("SummaryView", { ...route.params, images })}
         accessoryRight={(props) => (
           <Icon {...props} name="chevron-right-outline"></Icon>
         )}
