@@ -14,22 +14,35 @@ import {
   Image,
   Dimensions,
   StyleSheet,
+  useWindowDimensions,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import PreferredItem from "../../../components/preferred-item";
+import PagerView from "react-native-pager-view";
 
 const Page = ({ navigation, route }) => {
   const styles = useStyleSheet(themeStyles);
+  const window = useWindowDimensions();
 
   return (
     <ScrollView>
       <Layout level="2" style={[styles.container]}>
-        <Image
-          id="images-container"
-          style={[styles.imagesContainer, styles.stackItem]}
-          source={require("../../../assets/images/Images-rafiki.png")}
-          resizeMode="contain"
-        ></Image>
+        <PagerView
+          style={{ height: window.width - 25, width: window.width - 25}}
+        >
+          {images.map((image, i) => (
+            <View
+              key={`${i + 1}`}
+              style={{ justifyContent: "center", alignItems: "center" }}
+            >
+              <Image
+                resizeMode="cover"
+                style={{ width: "100%", flex: 1 }}
+                source={{ uri: image.uri }}
+              />
+            </View>
+          ))}
+        </PagerView>
 
         <View style={[styles.itemHeader, styles.stackItem]}>
           <View>

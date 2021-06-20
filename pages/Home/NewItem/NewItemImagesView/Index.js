@@ -1,33 +1,22 @@
-import React, { useState, useEffect, useRef, createContext } from "react";
+import React, { useState, useEffect, createContext } from "react";
 import {
-  useTheme,
   Layout,
   Text,
   Button,
   Icon,
-  ViewPager,
+  StyleService,
+  useStyleSheet,
+  useTheme,
 } from "@ui-kitten/components";
-import {
-  View,
-  TouchableOpacity,
-  Image,
-  useWindowDimensions,
-} from "react-native";
-import {
-  createStackNavigator,
-  CardStyleInterpolators,
-} from "@react-navigation/stack";
-import PagerView from "react-native-pager-view";
+import { View, Image, ScrollView } from "react-native";
 
 export const NewItemImagesContext = createContext();
-const NewItemImagesStack = createStackNavigator();
-
 const NewItemImagesView = ({ navigation, route }) => {
   const theme = useTheme();
+  const styles = useStyleSheet(stylesheet);
   const [images, setImages] = useState([]);
-  const pagerRef = useRef(null);
-  const window = useWindowDimensions();
-
+  const [imagesContainerWidth, setImagesContainerWidth] = useState(0);
+  const [imagesContainerHeight, setImagesContainerHeight] = useState(0);
   useEffect(() => {
     const hasParams = route.params;
     if (hasParams) {
@@ -46,19 +35,48 @@ const NewItemImagesView = ({ navigation, route }) => {
       <View
         style={{
           flex: 1,
-          flexDirection: "column-reverse",
           marginBottom: 24,
-          alignItems: "center",
+          alignItems: "stretch",
         }}
       >
+        {/* Images */}
+        {images.length ? (
+          <ScrollView
+            onLayout={(e) => {
+              setImagesContainerWidth(e.nativeEvent.layout.width);
+              setImagesContainerHeight(e.nativeEvent.layout.height);
+            }}
+            style={[styles.imagesContainer, { height: imagesContainerHeight }]}
+            contentContainerStyle={styles.imagesContent}
+          >
+            {images.map((image) => {
+              return (
+                <View
+                  style={[
+                    styles.imageContainer,
+                    {
+                      width: imagesContainerWidth / 2 - 12,
+                      height: imagesContainerWidth / 2 - 12,
+                    },
+                  ]}
+                >
+                  <Image source={{ uri: image.uri }} style={styles.image} />
+                </View>
+              );
+            })}
+          </ScrollView>
+        ) : (
+          <Image
+            source={require("../../../../assets/images/Images-rafiki.png")}
+            resizeMode="contain"
+            style={{ flex: 1, alignSelf: "center" }}
+          ></Image>
+        )}
+
+        {/* Action Buttons */}
         <View
           id="image-upload-actions-section"
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginTop: 24,
-            marginHorizontal: 25,
-          }}
+          style={styles.imagesUploadSection}
         >
           <Button
             status="info"
@@ -77,9 +95,7 @@ const NewItemImagesView = ({ navigation, route }) => {
             appearance="outline"
             size="large"
             style={{ flex: 1 }}
-            onPress={() =>
-              navigation.navigate("CameraView", { images })
-            }
+            onPress={() => navigation.navigate("CameraView", { images })}
             accessoryLeft={(props) => (
               <Icon {...props} name="camera-outline"></Icon>
             )}
@@ -87,38 +103,12 @@ const NewItemImagesView = ({ navigation, route }) => {
             Take a photo
           </Button>
         </View>
-
-        {images.length ? (
-          <PagerView
-            ref={pagerRef}
-            style={{ height: window.width, width: window.width }}
-          >
-            {images.map((image, i) => (
-              <View
-                key={`${i + 1}`}
-                style={{ justifyContent: "center", alignItems: "center" }}
-              >
-                <Image
-                  resizeMode="cover"
-                  style={{ width: "100%", flex: 1 }}
-                  source={{ uri: image.uri }}
-                />
-              </View>
-            ))}
-          </PagerView>
-        ) : (
-          <Image
-            source={require("../../../../assets/images/Images-rafiki.png")}
-            resizeMode="contain"
-            style={{ flex: 1 }}
-          ></Image>
-        )}
       </View>
 
       <Button
         size="giant"
         style={{ marginTop: "auto", marginHorizontal: 25 }}
-        onPress={() => navigation.navigate('CameraView', { images, setImages })}
+        onPress={() => navigation.navigate("SummaryView", { ...route.params })}
         accessoryRight={(props) => (
           <Icon {...props} name="chevron-right-outline"></Icon>
         )}
@@ -130,3 +120,36 @@ const NewItemImagesView = ({ navigation, route }) => {
 };
 
 export default NewItemImagesView;
+
+const stylesheet = StyleService.create({
+  imagesUploadSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 24,
+    marginHorizontal: 25,
+  },
+  imagesContainer: {
+    flex: 1,
+    borderRadius: 12,
+    marginHorizontal: 25,
+    borderStyle: "dashed",
+    borderColor: ["color-info-default"],
+    borderWidth: 1,
+  },
+  imagesContent: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
+  },
+  imageContainer: {
+    padding: 8,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  image: {
+    resizeMode: 'contain',
+    width: "100%",
+    height: "100%",
+    borderRadius: 12,
+  },
+});
