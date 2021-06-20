@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, createContext } from "react";
 import {
   useTheme,
   Layout,
@@ -19,27 +19,10 @@ import {
 } from "@react-navigation/stack";
 import PagerView from "react-native-pager-view";
 
+export const NewItemImagesContext = createContext();
 const NewItemImagesStack = createStackNavigator();
 
 const NewItemImagesView = ({ navigation, route }) => {
-  const navigateToSummaryView = () => {
-    navigation.navigate("SummaryView", { ...route.params });
-  };
-
-  return (
-    <NewItemImagesStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <NewItemImagesStack.Screen name="Main">
-        {(props) => <Main {...props} onNext={navigateToSummaryView} />}
-      </NewItemImagesStack.Screen>
-    </NewItemImagesStack.Navigator>
-  );
-};
-
-const Main = ({ navigation, route, onNext }) => {
   const theme = useTheme();
   const [images, setImages] = useState([]);
   const [pageIndex, setPageIndex] = useState(0);
@@ -53,7 +36,7 @@ const Main = ({ navigation, route, onNext }) => {
     } else {
       setImages([]);
     }
-  }, [route.params]);
+  }, [route]);
 
   return (
     <Layout level="2" style={{ flex: 1 }}>
@@ -96,9 +79,7 @@ const Main = ({ navigation, route, onNext }) => {
             size="large"
             style={{ flex: 1 }}
             onPress={() =>
-              navigation.navigate("CameraView", {
-                setImagesProxy: (photo) => setImages([...images, photo]),
-              })
+              navigation.navigate("CameraView", { images })
             }
             accessoryLeft={(props) => (
               <Icon {...props} name="camera-outline"></Icon>
@@ -138,7 +119,7 @@ const Main = ({ navigation, route, onNext }) => {
       <Button
         size="giant"
         style={{ marginTop: "auto", marginHorizontal: 25 }}
-        onPress={onNext}
+        onPress={() => navigation.navigate('CameraView', { images, setImages })}
         accessoryRight={(props) => (
           <Icon {...props} name="chevron-right-outline"></Icon>
         )}

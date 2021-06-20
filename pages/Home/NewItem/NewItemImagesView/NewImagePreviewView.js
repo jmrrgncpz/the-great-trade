@@ -6,8 +6,9 @@ const NewImagePreviewView = ({ navigation, route }) => {
   const window = useWindowDimensions();
   const theme = useTheme();
   const accept = () => {
-    route.params.setImagesProxy(route.params.photo);
-    navigation.navigate("NewItemImagesView");
+    navigation.navigate("NewItemImagesView", {
+      images: [...route.params.images, route.params.photo],
+    });
   };
 
   const discard = () => {
@@ -28,7 +29,7 @@ const NewImagePreviewView = ({ navigation, route }) => {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: theme['color-primary-default'],
+          backgroundColor: theme["color-primary-default"],
         }}
       >
         <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>

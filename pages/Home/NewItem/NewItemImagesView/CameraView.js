@@ -51,7 +51,10 @@ const CameraView = ({ navigation, route }) => {
     );
 
     setIsPhotoSaving(false);
-    navigation.navigate("NewImagePreviewView", {  ...route.params, photo: croppedPhoto });
+    navigation.navigate("NewImagePreviewView", {
+      images: route.params.images,
+      photo: croppedPhoto,
+    });
   };
 
   if (hasPermission === null || hasPermission === false) {
@@ -94,10 +97,7 @@ const CameraView = ({ navigation, route }) => {
           {/* Loading overlay */}
           {isPhotoSaving ? (
             <View style={styles.loadingOverlay}>
-              <Spinner
-                status="info"
-                size="giant"
-              />
+              <Spinner status="info" size="giant" />
             </View>
           ) : null}
         </View>
