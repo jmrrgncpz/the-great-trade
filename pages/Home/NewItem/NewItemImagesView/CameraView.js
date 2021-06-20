@@ -132,7 +132,14 @@ const CameraView = ({ navigation, route }) => {
             styles.captureArea,
             { width: window.width, height: window.width },
           ]}
-        ></View>
+        >
+          {/* Loading overlay */}
+          {isPhotoSaving ? (
+            <View style={styles.loadingOverlay}>
+              <Spinner status="info" size="giant" style={styles.loadingSpinner} />
+            </View>
+          ) : null}
+        </View>
 
         {/* Camera Footer */}
         <View style={[styles.cameraFooter, styles.cameraInterfaceContainer]}>
@@ -186,21 +193,6 @@ const CameraView = ({ navigation, route }) => {
           )}
         </View>
       </View>
-
-      {/* Loading overlay */}
-      {isPhotoSaving ? (
-        <View
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Spinner status="info" size="giant" />
-        </View>
-      ) : null}
 
       {photo != null ? (
         <Image
@@ -268,5 +260,15 @@ const themedStyles = StyleService.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  loadingOverlay: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.3)",
+  },
+  loadingSpinner: {
   },
 });
