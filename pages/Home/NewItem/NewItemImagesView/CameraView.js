@@ -19,21 +19,10 @@ const CameraView = ({ navigation, route }) => {
   const styles = useStyleSheet(themedStyles);
   const theme = useTheme();
   const cameraRef = useRef(null);
-  const captureAreaRef = useRef(null);
   const [hasPermission, setHasPermission] = useState(null);
   const [isCameraInitiating, setIsCameraInitiating] = useState(true);
   const [isPhotoSaving, setIsPhotoSaving] = useState(false);
   const [photo, setPhoto] = useState(null);
-  // const [cropOptions, setCropOptions] = useState({});
-
-  // const onCaptureAreaLayout = (e) => {
-  //   setCropOptions({
-  //     width: e.nativeEvent.layout.width,
-  //     height: e.nativeEvent.layout.height,
-  //     originX: e.nativeEvent.layout.x,
-  //     originY: e.nativeEvent.layout.y,
-  //   });
-  // };
 
   useEffect(() => {
     (async () => {
@@ -42,32 +31,10 @@ const CameraView = ({ navigation, route }) => {
     })();
   }, []);
 
-  useEffect(() => {
-    if (cameraRef == null || cameraRef.current == null) return;
-
-    if (photo == null) {
-      cameraRef.current.resumePreview();
-    } else {
-      cameraRef.current.pausePreview();
-    }
-  }, [photo]);
-
   const snap = async () => {
     setIsPhotoSaving(true);
-    const supportedRatios = await cameraRef.current.getSupportedRatiosAsync();
-    const pictureSizes = supportedRatios.map(async (ratio) => {
-      const sizes = await cameraRef.current.getAvailablePictureSizesAsync(
-        ratio
-      );
 
-      return {
-        ratio,
-        sizes,
-      };
-    });
-
-    let photo = await cameraRef.current.takePictureAsync();
-    debugger;
+    const photo = await cameraRef.current.takePictureAsync();
     const croppedPhoto = await ImageManipulator.manipulateAsync(
       photo.uri,
       [
@@ -83,17 +50,8 @@ const CameraView = ({ navigation, route }) => {
       { compress: 0.5 }
     );
 
-    setPhoto(croppedPhoto);
     setIsPhotoSaving(false);
-  };
-
-  const accept = () => {
-    route.params.setImagesProxy(photo);
-    navigation.goBack();
-  };
-
-  const discard = () => {
-    setPhoto(null);
+    navigation.navigate("NewImagePreviewView", {  ...route.params, photo: croppedPhoto });
   };
 
   if (hasPermission === null || hasPermission === false) {
@@ -136,61 +94,36 @@ const CameraView = ({ navigation, route }) => {
           {/* Loading overlay */}
           {isPhotoSaving ? (
             <View style={styles.loadingOverlay}>
-              <Spinner status="info" size="giant" style={styles.loadingSpinner} />
+              <Spinner
+                status="info"
+                size="giant"
+              />
             </View>
           ) : null}
         </View>
 
         {/* Camera Footer */}
         <View style={[styles.cameraFooter, styles.cameraInterfaceContainer]}>
-          {photo == null ? (
-            <View style={styles.mainButtonsContainer}>
-              <View style={styles.buttonContainer}>
-                <Button
-                  size="giant"
-                  status="danger"
-                  style={{ borderRadius: 50, width: 50, height: 50 }}
-                  accessoryLeft={(props) => (
-                    <Icon {...props} name="close-outline" />
-                  )}
-                />
-              </View>
-              <View style={styles.buttonContainer}>
-                <TouchableNativeFeedback
-                  style={styles.snapButton}
-                  onPress={snap}
-                  disabled={isCameraInitiating}
-                >
-                  <View style={styles.snapButtonInner} />
-                </TouchableNativeFeedback>
-              </View>
-              <View style={styles.buttonContainer}></View>
-            </View>
-          ) : (
-            <View style={{ flexDirection: "row" }}>
-              <Button
-                size="giant"
-                status="danger"
-                style={{ marginRight: 24 }}
-                accessoryLeft={(props) => (
-                  <Icon {...props} name="close-outline" />
-                )}
-                onPress={discard}
-              >
-                Discard
-              </Button>
-              <Button
-                size="giant"
-                status="info"
-                accessoryLeft={(props) => (
-                  <Icon {...props} name="checkmark-outline" />
-                )}
-                onPress={accept}
-              >
-                Accept
-              </Button>
-            </View>
-          )}
+          <View style={styles.buttonContainer}>
+            <Button
+              size="giant"
+              status="danger"
+              style={{ borderRadius: 50, width: 50, height: 50 }}
+              accessoryLeft={(props) => (
+                <Icon {...props} name="close-outline" />
+              )}
+            />
+          </View>
+          <View style={styles.buttonContainer}>
+            <TouchableNativeFeedback
+              style={styles.snapButton}
+              onPress={snap}
+              disabled={isCameraInitiating}
+            >
+              <View style={styles.snapButtonInner} />
+            </TouchableNativeFeedback>
+          </View>
+          <View style={styles.buttonContainer}></View>
         </View>
       </View>
 
@@ -226,9 +159,10 @@ const themedStyles = StyleService.create({
     backgroundColor: "rgba(0,0,0, 0.5)",
   },
   cameraFooter: {
-    justifyContent: "center",
-    alignItems: "center",
     flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   interfaceContainer: {
     position: "absolute",
@@ -251,11 +185,6 @@ const themedStyles = StyleService.create({
     borderRadius: 85,
     backgroundColor: "lightgray",
   },
-  mainButtonsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
   buttonContainer: {
     flex: 1,
     justifyContent: "center",
@@ -268,7 +197,5 @@ const themedStyles = StyleService.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.3)",
-  },
-  loadingSpinner: {
   },
 });

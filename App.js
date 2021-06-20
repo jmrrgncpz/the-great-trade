@@ -23,6 +23,7 @@ import { registerIcons } from "./fontawesome";
 // Main Pages
 import Main from "./Main";
 import CameraView from "./pages/Home/NewItem/NewItemImagesView/CameraView";
+import NewImagePreviewView from "./pages/Home/NewItem/NewItemImagesView/NewImagePreviewView";
 
 // Registration Pages
 import Landing from "./pages/Registration/Landing";
@@ -93,9 +94,17 @@ export default function App() {
               mode="modal"
             >
               <MainStack.Screen name="Main" component={Main} />
+              {/* Modals */}
               <MainStack.Screen
                 name="CameraView"
                 component={CameraView}
+                options={{
+                  cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+                }}
+              />
+              <MainStack.Screen
+                name="NewImagePreviewView"
+                component={NewImagePreviewView}
                 options={{
                   cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
                 }}

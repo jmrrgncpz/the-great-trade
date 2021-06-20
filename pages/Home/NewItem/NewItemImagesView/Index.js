@@ -19,11 +19,7 @@ import {
 } from "@react-navigation/stack";
 import PagerView from "react-native-pager-view";
 
-// Pages
-import CameraView from "./CameraView";
-
 const NewItemImagesStack = createStackNavigator();
-const navigatorScreenOptions = {};
 
 const NewItemImagesView = ({ navigation, route }) => {
   const navigateToSummaryView = () => {
