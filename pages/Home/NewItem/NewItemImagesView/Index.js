@@ -49,9 +49,10 @@ const NewItemImagesView = ({ navigation, route }) => {
             style={[styles.imagesContainer, { height: imagesContainerHeight }]}
             contentContainerStyle={styles.imagesContent}
           >
-            {images.map((image) => {
+            {images.map((image, i) => {
               return (
                 <View
+                  key={`image-${i}`}
                   style={[
                     styles.imageContainer,
                     {
