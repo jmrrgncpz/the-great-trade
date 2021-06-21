@@ -57,8 +57,8 @@ const Page = ({ navigation, route }) => {
                   flexWrap: "wrap",
                 }}
               >
-                {tags.map((tag) => (
-                  <Text status="control" category="c1" style={[styles.tag]}>
+                {tags.map((tag, i) => (
+                  <Text key={`tag-${i}`} status="control" category="c1" style={[styles.tag]}>
                     {tag}
                   </Text>
                 ))}
@@ -89,6 +89,7 @@ const Page = ({ navigation, route }) => {
               <View>
                 {preferredItems.map((preferredItem, i) => (
                   <PreferredItem
+                  key={`preferred-item-${i}`}
                     itemName={preferredItem}
                     priorityNo={i}
                     removeFn={() => {

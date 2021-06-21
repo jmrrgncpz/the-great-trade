@@ -48,7 +48,7 @@ const Page = ({ navigation, route }) => {
           >
             {route.params.images.map((image, i) => (
               <View
-                key={`${i + 1}`}
+                key={`image-${i + 1}`}
                 style={{ justifyContent: "center", alignItems: "center" }}
               >
                 <Image
@@ -100,8 +100,8 @@ const Page = ({ navigation, route }) => {
           id="tags-container"
           style={[styles.stackItem, styles.tagsContainer]}
         >
-          {route.params.tags.map((tag) => (
-            <Text category="c1" style={[styles.tag]}>
+          {route.params.tags.map((tag, i) => (
+            <Text key={`summary-tag-${i}`} category="c1" style={[styles.tag]}>
               {tag}
             </Text>
           ))}
@@ -119,7 +119,7 @@ const Page = ({ navigation, route }) => {
             style={[styles.preferredItemsListContainer]}
           >
             {route.params.preferredItems.map((itemName, i) => (
-              <PreferredItem priorityNo={i} itemName={itemName} />
+              <PreferredItem key={`summary-preferred-item-${i}`} priorityNo={i} itemName={itemName} />
             ))}
           </View>
         </View>
