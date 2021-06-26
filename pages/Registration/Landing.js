@@ -1,39 +1,39 @@
-import React from "react";
-import { Icon, Text, Layout, Button } from "@ui-kitten/components";
-import { Image, ImageBackground, useWindowDimensions } from "react-native";
-import * as Facebook from "expo-facebook";
+import React, { useState, useContext, useCallback } from "react";
+import {
+  Icon,
+  Text,
+  Button,
+} from "@ui-kitten/components";
+import {
+  Image,
+  ImageBackground,
+  View,
+} from "react-native";
+import {
+  signInWithFacebookAsync,
+} from "../../services/AuthenticationService";
+import { AuthContext } from "../../AuthContext";
+
+const openPhoneNumberRegistration = () => {
+  navigation.navigate("RegisterPhoneNumber");
+};
 
 const Landing = ({ navigation }) => {
-  const register = () => {
-    console.log("register tapped");
-    Facebook.logInWithReadPermissionsAsync({
-      permissions: ["public_profile", "email"],
-    })
-      .then((result) => {
-        if (result.type === "success") {
-          console.log(result);
-        } else {
-          console.log("error");
-        }
-      })
-      .catch((ex) => {
-        console.log(ex);
-      });
-  };
+  const { signIn } = useContext(AuthContext);
 
-  const openPhoneNumberRegistration = () => {
-    navigation.navigate("RegisterPhoneNumber");
-  };
+  const doSignInWithFacebookAsync = useCallback(() => {
+    signIn(signInWithFacebookAsync);
+  }, []);
 
   return (
     <ImageBackground
       style={{ flex: 1, resizeMode: "cover" }}
       source={require("../../assets/images/tamas-tokos-0PwHrPaXc5g-unsplash.jpg")}
     >
-      <Layout
+      <View
         style={{ flex: 1, padding: 40, backgroundColor: "rgba(0,0,0,0.7)" }}
       >
-        <Layout style={{ flex: 1, backgroundColor: "rgba(0,0,0,0)" }}>
+        <View style={{ flex: 1 }}>
           <Image
             style={{
               width: 150,
@@ -41,14 +41,13 @@ const Landing = ({ navigation }) => {
             }}
             source={require("../../assets/logos/white-Montserrate-wline-The-Great-Trade-logos_white.png")}
           />
-        </Layout>
-        <Layout style={{ flex: 1, backgroundColor: "rgba(0,0,0,0)" }}>
+        </View>
+        <View style={{ flex: 1 }}>
           <Text
+            category="h1"
             style={{
-              fontSize: 36,
               textAlign: "center",
               marginBottom: 10,
-              fontFamily: "Lato-Bold",
             }}
             status="control"
           >
@@ -56,32 +55,45 @@ const Landing = ({ navigation }) => {
           </Text>
           <Text
             style={{
-              fontSize: 16,
               textAlign: "center",
-              fontFamily: "Lato-Regular",
+              letterSpacing: 1,
             }}
             status="control"
           >
             Post your items up for barter, send and accept trade requests.
           </Text>
-        </Layout>
-        <Layout
+        </View>
+        <View
           style={{
-            display: "flex",
             flex: 1,
-            backgroundColor: "rgba(0,0,0,0)",
           }}
         >
-          <Button
-            onPress={register}
-            style={{ marginBottom: 10 }}
-            status="basic"
-          >
-            Register with Facebook
-          </Button>
-          <Button onPress={openPhoneNumberRegistration}> Sign in with Facebook</Button>
-        </Layout>
-      </Layout>
+          <Text category="h4" status="control" style={{ marginBottom: 12 }}>
+            Sign in with
+          </Text>
+          <View style={{ flexDirection: "row", marginBottom: 12 }}>
+            <Button
+              onPress={doSignInWithFacebookAsync}
+              style={{ flex: 1, marginRight: 12 }}
+              status="basic"
+              accessoryLeft={(props) => (
+                <Icon {...props} name="facebook-outline" />
+              )}
+            >
+              Facebook
+            </Button>
+            <Button
+              style={{ flex: 1 }}
+              status="basic"
+              accessoryLeft={(props) => (
+                <Icon {...props} name="google-outline" />
+              )}
+            >
+              Google
+            </Button>
+          </View>
+        </View>
+      </View>
     </ImageBackground>
   );
 };
