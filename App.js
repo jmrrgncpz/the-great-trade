@@ -26,7 +26,9 @@ import { default as theme } from "./custom-theme.json";
 import { default as mapping } from "./mapping.json";
 import { registerIcons } from "./fontawesome";
 import * as SecureStore from "expo-secure-store";
-import { AuthContext, methods, authState, reducer } from "./AuthContext";
+import { AuthContext, authState, reducer } from "./AuthContext";
+import { signOut } from "./services/AuthenticationService";
+
 // Main Pages
 import Main from "./Main";
 
@@ -57,7 +59,38 @@ export default function App() {
   }, []);
 
   const [state, dispatch] = useReducer(reducer, authState);
-  const authContextValue = useMemo(methods, []);
+  const authContextValue = useMemo(() => ({
+    signIn: async (signInFn) => {
+      dispatch({ type: "SET_LOADING", isLoading: true });
+  
+      try {
+        const { token, type } = await signInFn();
+        await SecureStore.setItemAsync("userToken", token);
+  
+        dispatch({ type: "SIGN_IN", token });
+      } catch {
+        // TODO: define a state to show a failed login modal
+        console.log("Sign in failed");
+      } finally {
+        dispatch({ type: "SET_LOADING", isLoading: false });
+      }
+    },
+    signOut: async () => {
+      dispatch({ type: "SET_LOADING", isLoading: true });
+  
+      // set token null early
+      // to transition page immediately
+      // from secured page to landing
+      dispatch({ type: "SIGN_OUT" });
+  
+      // keep loading til
+      // signout from firebase
+      // and remove token in localstorage is done
+      Promise.all([signOut(), SecureStore.deleteItemAsync("userToken")]).then(
+        () => dispatch({ type: "SET_LOADING", isLoading: false })
+      );
+    },
+  }), []);
 
   // Check if user is signed in, set
   useEffect(() => {
