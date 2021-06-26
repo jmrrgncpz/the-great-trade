@@ -1,16 +1,9 @@
 import React, { useState, useContext, useCallback } from "react";
-import {
-  Icon,
-  Text,
-  Button,
-} from "@ui-kitten/components";
-import {
-  Image,
-  ImageBackground,
-  View,
-} from "react-native";
+import { Icon, Text, Button } from "@ui-kitten/components";
+import { Image, ImageBackground, View } from "react-native";
 import {
   signInWithFacebookAsync,
+  signInWithGoogleAsync,
 } from "../../services/AuthenticationService";
 import { AuthContext } from "../../AuthContext";
 
@@ -23,6 +16,10 @@ const Landing = ({ navigation }) => {
 
   const doSignInWithFacebookAsync = useCallback(() => {
     signIn(signInWithFacebookAsync);
+  }, []);
+
+  const doSignInWithGoogle = useCallback(() => {
+    signIn(signInWithGoogleAsync);
   }, []);
 
   return (
@@ -83,6 +80,7 @@ const Landing = ({ navigation }) => {
               Facebook
             </Button>
             <Button
+              onPress={doSignInWithGoogle}
               style={{ flex: 1 }}
               status="basic"
               accessoryLeft={(props) => (

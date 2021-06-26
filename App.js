@@ -68,9 +68,6 @@ export default function App() {
         await SecureStore.setItemAsync("userToken", token);
   
         dispatch({ type: "SIGN_IN", token });
-      } catch {
-        // TODO: define a state to show a failed login modal
-        console.log("Sign in failed");
       } finally {
         dispatch({ type: "SET_LOADING", isLoading: false });
       }
