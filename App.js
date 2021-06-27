@@ -91,6 +91,7 @@ export default function App() {
 
   // Check if user is signed in, set
   useEffect(() => {
+    dispatch({ type: 'SET_LOADING', isLoading: true })
     SecureStore.getItemAsync("userToken")
       .then((token) => {
         if (token != null) {
@@ -99,6 +100,9 @@ export default function App() {
       })
       .catch((e) => {
         console.log("Restore token failed");
+      })
+      .finally(() => {
+        dispatch({ type: 'SET_LOADING', isLoading: false })
       });
   }, []);
 
