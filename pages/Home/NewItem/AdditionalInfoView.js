@@ -7,7 +7,7 @@ import {
   useStyleSheet,
   StyleService,
 } from "@ui-kitten/components";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -17,8 +17,10 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import PreferredItem from "../../../components/preferred-item";
+import NewItemContext from "./new-item-context";
 
-const Page = ({ navigation, route }) => {
+const Page = ({ tags, preferredItems }) => {
+  const setItemState = useContext(NewItemContext);
   const theme = useTheme();
   const styles = useStyleSheet(themedStyles);
 
@@ -26,8 +28,6 @@ const Page = ({ navigation, route }) => {
   const [isInputVisible, setIsInputVisible] = useState(false);
 
   const [currentInputTarget, setCurrentInputTarget] = useState("");
-  const [tags, setTags] = useState([]);
-  const [preferredItems, setPreferredItems] = useState([]);
 
   const onNewBtnPressed = (inputTarget) => {
     setCurrentInputTarget(inputTarget);
@@ -50,24 +50,19 @@ const Page = ({ navigation, route }) => {
               <Text category="h2" style={{ marginBottom: 12 }}>
                 Tags
               </Text>
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                }}
-              >
+              <View style={styles.tagsContainer}>
                 {tags.map((tag, i) => (
-                  <Text key={`tag-${i}`} status="control" category="c1" style={[styles.tag]}>
+                  <Text
+                    key={`tag-${i}`}
+                    status="control"
+                    category="c1"
+                    style={[styles.tag]}
+                  >
                     {tag}
                   </Text>
                 ))}
                 <Button
-                  style={{
-                    borderStyle: "dashed",
-                    borderColor: theme["color-info-default"],
-                    backgroundColor: "transparent",
-                  }}
+                  style={styles.newButton}
                   appearance="ghost"
                   status="info"
                   onPress={() => onNewBtnPressed("tag")}
@@ -89,7 +84,7 @@ const Page = ({ navigation, route }) => {
               <View>
                 {preferredItems.map((preferredItem, i) => (
                   <PreferredItem
-                  key={`preferred-item-${i}`}
+                    key={`preferred-item-${i}`}
                     itemName={preferredItem}
                     priorityNo={i}
                     removeFn={() => {
@@ -101,12 +96,7 @@ const Page = ({ navigation, route }) => {
                 ))}
                 {preferredItems.length < 3 ? (
                   <Button
-                    style={{
-                      marginTop: 12,
-                      borderStyle: "dashed",
-                      borderColor: theme["color-info-default"],
-                      backgroundColor: "transparent",
-                    }}
+                    style={[styles.newButton, { marginTop: 12 }]}
                     appearance="ghost"
                     status="info"
                     onPress={() => onNewBtnPressed("preferred item")}
@@ -121,37 +111,12 @@ const Page = ({ navigation, route }) => {
                 ) : null}
               </View>
             </View>
-
-            <Button
-              size="giant"
-              style={{ marginTop: "auto" }}
-              onPress={() =>
-                navigation.navigate("NewItemImagesView", { ...route.params, preferredItems, tags })
-              }
-              accessoryRight={(props) => (
-                <Icon {...props} name="chevron-right-outline"></Icon>
-              )}
-            >
-              Next
-            </Button>
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
 
       {isInputVisible ? (
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0,0,0, 0.9)",
-            padding: 25,
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        <View style={styles.actionButton}>
           <TextInput
             autoFocus
             multiline
@@ -174,9 +139,11 @@ const Page = ({ navigation, route }) => {
               style={{ flex: 1 }}
               onPress={() => {
                 if (currentInputTarget == "tag") {
-                  setTags([...tags, currentInputText]);
+                  setItemState({ tags: [...tags, currentInputText] });
                 } else {
-                  setPreferredItems([...preferredItems, currentInputText]);
+                  setItemState({
+                    preferredItems: [...preferredItems, currentInputText],
+                  });
                 }
 
                 setIsInputVisible(false);
@@ -205,5 +172,26 @@ const themedStyles = StyleService.create({
     marginBottom: 8,
     elevation: 3,
     fontSize: 12,
+  },
+  actionButton: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0, 0.9)",
+    padding: 25,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  tagsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  newButton: {
+    borderStyle: "dashed",
+    borderColor: ["color-info-default"],
+    backgroundColor: "transparent",
   },
 });

@@ -1,15 +1,29 @@
-import { Layout, Text, Icon, Input, Button } from "@ui-kitten/components";
-import React, { useState } from "react";
-import { View } from 'react-native';
 import {
+  Layout,
+  Text,
+  Input,
+  Select,
+  SelectGroup,
+  SelectItem,
+  IndexPath,
+  useTheme,
+} from "@ui-kitten/components";
+import React, { useState, useContext } from "react";
+import {
+  View,
   Keyboard,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  ScrollView,
 } from "react-native";
-import { Platform } from "react-native";
-const DetailsView = ({ navigation, route, onNextPressed }) => {
-  const [itemName, setItemName] = useState("");
-  const [itemDescription, setItemDescription] = useState("");
+import { categories } from "../../../categories";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import NewItemContext from "./new-item-context";
+const DetailsView = ({ name, description, category }) => {
+  const setItemState = useContext(NewItemContext)
+  const theme = useTheme();
+  // const [itemName, setItemName] = useState("");
+  // const [itemDescription, setItemDescription] = useState("");
 
   const [isNameHintVisible, setIsNameHintVisible] = useState(false);
   const [isDescriptionHintVisible, setIsDescriptionHintVisible] =
@@ -18,61 +32,94 @@ const DetailsView = ({ navigation, route, onNextPressed }) => {
   const [nameInputStatus, setNameInputStatus] = useState("default");
   const [descriptionStatus, setDescriptionStatus] = useState("default");
 
+  const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0, 0));
+
   const onNameBlur = () => {
-    const isNameValid = itemName.length;
+    const isNameValid = name.length;
     setNameInputStatus(isNameValid ? "success" : "danger");
     setIsNameHintVisible(isNameValid ? false : true);
   };
 
   const onDescriptionBlur = () => {
-    const isHintVisible = itemDescription.length < 5;
+    const isHintVisible = description.length < 5;
     setIsDescriptionHintVisible(isHintVisible);
     setDescriptionStatus(isHintVisible ? "danger" : "success");
   };
 
-  onNextPressed =
-    onNextPressed ||
-    (() => {
-      navigation.navigate("AdditionalInfoView", {
-        ...route.params,
-        itemName,
-        itemDescription,
-      });
-    });
+  const categoryDisplayValue =
+    categories[selectedIndex.section].subcategories[selectedIndex.row];
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
+    <TouchableWithoutFeedback
+      onPress={() => Keyboard.dismiss()}
+      accessible={false}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ScrollView keyboarShoulPersistTaps="handle">
         <Layout level="2" style={{ flex: 1, padding: 25 }}>
-          <View id="name-input-field" style={{ marginBottom: 24 }}>
-            <Text category="h1" style={{ fontSize: 36 }}>
-              Details
+          <Input
+            accessibilityLabel="item name input"
+            placeholder="Item name"
+            value={name}
+            onChangeText={(newItemName) => setItemState({ name: newItemName})}
+            status={nameInputStatus}
+            onBlur={onNameBlur}
+            textStyle={{
+              fontSize: 36,
+              fontFamily: "Montserrat-SemiBold",
+              marginLeft: -9,
+              padding: 0,
+              color: theme["color-info-default"],
+            }}
+            style={{
+              borderWidth: 0,
+              backgroundColor: "transparent",
+              marginBottom: 24,
+            }}
+            caption={() => {
+              return isNameHintVisible ? (
+                <Text status="danger" category="c1" appearance="hint">
+                  Input an appropriate name.
+                </Text>
+              ) : <Text category="c1">What is this called? What brand and model?</Text>;
+            }}
+          />
+
+          <View style={{ marginBottom: 24 }}>
+            <Text category="h3" style={{ marginBottom: 8 }}>
+              Category
             </Text>
-            <Text
-              style={{ fontSize: 16, marginBottom: 12, letterSpacing: 0.8 }}
+            <Select
+              placeholder="Category"
+              selectedIndex={selectedIndex}
+              value={categoryDisplayValue.name}
+              onSelect={(index) => setSelectedIndex(index)}
+              size="large"
             >
-              What's this thing called? What brand, model, etc
-            </Text>
-            <Input
-              accessibilityLabel="item name input"
-              placeholder="Name"
-              value={itemName}
-              onChangeText={(newItemName) => setItemName(newItemName)}
-              status={nameInputStatus}
-              onBlur={onNameBlur}
-            ></Input>
-            {isNameHintVisible ? <Text status="danger" appearance="hint">Input an appropriate name.</Text> : null}
+              {categories.map((category) => (
+                <SelectGroup title={category.name} key={`category-${category}`}>
+                  {category.subcategories.map((subcategory) => (
+                    <SelectItem
+                      key={`subcategory-${subcategory}`}
+                      accessoryLeft={(props) => (
+                        <FontAwesomeIcon
+                          color="rgb(2, 152, 239)"
+                          icon={subcategory.icon}
+                          size={24}
+                          style={{ marginRight: 12 }}
+                        />
+                      )}
+                      title={subcategory.name}
+                      value={subcategory.name}
+                    />
+                  ))}
+                </SelectGroup>
+              ))}
+            </Select>
           </View>
 
           <View id="description-input-field">
-            <Text
-              style={{ fontSize: 16, marginBottom: 12, letterSpacing: 0.8 }}
-            >
-              Provide more information about this item e.g. receipt date,
-              warranty, issues/flaws, etc.
+            <Text category="h3" style={{ marginBottom: 8 }}>
+              Description
             </Text>
             <Input
               multiline={true}
@@ -83,33 +130,30 @@ const DetailsView = ({ navigation, route, onNextPressed }) => {
               }}
               status={descriptionStatus}
               accessibilityLabel="item description input"
-              placeholder="Description"
-              value={itemDescription}
+              placeholder="Provide more information about this item e.g. receipt date,
+              warranty, issues/flaws, etc."
+              value={description}
               onChangeText={(newItemDescription) =>
-                setItemDescription(newItemDescription)
+                setItemState({ description: newItemDescription })
               }
+              caption={() => {
+                return isDescriptionHintVisible ? (
+                  <Text
+                    status="danger"
+                    appearance="hint"
+                    category="c1"
+                    style={{ marginTop: 8 }}
+                  >
+                    Tell us more about this item.
+                  </Text>
+                ) : null;
+              }}
               onBlur={onDescriptionBlur}
-            ></Input>
-            {isDescriptionHintVisible ? (
-              <Text status="danger" appearance="hint">Tell us more about this item.</Text>
-            ) : null}
+            />
           </View>
-
-          <Button
-            accessibilityLabel="next button"
-            size="giant"
-            style={{ marginTop: "auto" }}
-            onPress={onNextPressed}
-            accessoryRight={(props) => (
-              <Icon {...props} name="chevron-right-outline" />
-            )}
-            disabled={!(itemName.length > 0 && itemDescription.length > 5)}
-          >
-            Next
-          </Button>
         </Layout>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+      </ScrollView>
+    </TouchableWithoutFeedback>
   );
 };
 

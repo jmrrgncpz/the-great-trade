@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Layout,
   Text,
@@ -10,12 +10,10 @@ import {
 } from "@ui-kitten/components";
 import { View, Image, ScrollView } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
-
-export const NewItemImagesContext = createContext();
-const NewItemImagesView = ({ navigation, route }) => {
-  const theme = useTheme();
+import NewItemContext from "./new-item-context";
+const NewItemImagesView = ({ images }) => {
+  const setItemState = useContext(NewItemContext)
   const styles = useStyleSheet(stylesheet);
-  const [images, setImages] = useState([]);
   const [imagesContainerWidth, setImagesContainerWidth] = useState(0);
   const [imagesContainerHeight, setImagesContainerHeight] = useState(0);
 
@@ -40,7 +38,7 @@ const NewItemImagesView = ({ navigation, route }) => {
     })
 
     if(!result.cancelled){
-      setImages([...images, result]);
+      setItemState({ images: [...images, result] });
     }
   }
 
@@ -53,7 +51,7 @@ const NewItemImagesView = ({ navigation, route }) => {
     })
 
     if (!result.cancelled){
-      setImages([...images, result]);
+      setItemState({ images: [...images, result] });
     }
   }
 
@@ -137,17 +135,6 @@ const NewItemImagesView = ({ navigation, route }) => {
           </Button>
         </View>
       </View>
-
-      <Button
-        size="giant"
-        style={{ marginTop: "auto", marginHorizontal: 25 }}
-        onPress={() => navigation.navigate("SummaryView", { ...route.params, images })}
-        accessoryRight={(props) => (
-          <Icon {...props} name="chevron-right-outline"></Icon>
-        )}
-      >
-        Next
-      </Button>
     </Layout>
   );
 };

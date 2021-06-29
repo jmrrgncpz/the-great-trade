@@ -1,64 +1,122 @@
-import React, { useState, createContext } from "react";
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import React, { useState, useCallback } from "react";
 import {
-  createStackNavigator,
-  CardStyleInterpolators,
-} from "@react-navigation/stack";
-import { Icon } from "@ui-kitten/components";
-import { Image } from "react-native";
+  Layout,
+  Icon,
+  ViewPager,
+  Button,
+  ButtonGroup,
+} from "@ui-kitten/components";
+import { View } from "react-native";
+import NewItemContext from "./new-item-context";
+import useKeyboardBehavior from "../../../custom-hooks/view-keyboard-behavior";
 
 // Pages
-import CategorySelectionView from "./CategorySelectionView";
 import ConditionSelectionView from "./ConditionSelectionView";
 import DetailsView from "./DetailsView";
 import AdditionalInfoView from "./AdditionalInfoView";
 import NewItemImagesView from "./PhotoSelectorView";
 import SummaryView from "./SummaryView";
 
-// components
-const CloseIcon = (props) => (
-  <Image
-    style={{ width: 24, height: 24 }}
-    source={require("../../../assets/icons/close-outline.png")}
-  />
-);
+const initialState = {
+  condition: "",
+  category: "",
+  name: "",
+  description: "",
+  tags: [],
+  preferredItems: [],
+  images: [],
+};
 
-const ItemCreationStack = createStackNavigator();
 const NewItemPage = () => {
+  const [newItem, setNewItem] = useState(initialState);
+  const setItemState = useCallback(
+    (item) => {
+      setNewItem({
+        ...newItem,
+        ...item,
+      });
+    },
+    [newItem]
+  );
+
+  useKeyboardBehavior(
+    () => setIsNavigationVisible(false),
+    () => setIsNavigationVisible(true)
+  );
+
+  const [isNavigationVisible, setIsNavigationVisible] = useState(true);
+  const [currentPageIndex, setCurrentPageIndex] = useState(0);
+
   return (
-    <ItemCreationStack.Navigator
-      screenOptions={{
-        headerTitleStyle: {
-          fontSize: 16,
-          fontFamily: "Montserrat-SemiBold",
-        },
-        headerTitleAlign: "center",
-        title: "New Item",
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-      }}
-    >
-      <ItemCreationStack.Screen
-        name="CategorySelectionView"
-        component={CategorySelectionView}
-        options={{
-          headerBackImage: CloseIcon,
-        }}
-      />
-      <ItemCreationStack.Screen
-        name="ConditionSelectionView"
-        component={ConditionSelectionView}
-      />
-      <ItemCreationStack.Screen name="DetailsView" component={DetailsView} />
-      <ItemCreationStack.Screen
-        name="AdditionalInfoView"
-        component={AdditionalInfoView}
-      />
-      <ItemCreationStack.Screen
-        name="NewItemImagesView"
-        component={NewItemImagesView}
-      />
-      <ItemCreationStack.Screen name="SummaryView" component={SummaryView} />
-    </ItemCreationStack.Navigator>
+    <NewItemContext.Provider value={setItemState}>
+      <Layout level="2" style={{ flex: 1 }}>
+        <ViewPager
+          swipeEnabled={false}
+          style={{ flex: 1 }}
+          selectedIndex={currentPageIndex}
+          onSelect={(index) => setCurrentPageIndex(index)}
+        >
+          <ConditionSelectionView condition={newItem.condition} />
+          <DetailsView
+            name={newItem.name}
+            description={newItem.description}
+            category={newItem.selectedCategory}
+          />
+          <AdditionalInfoView
+            tags={newItem.tags}
+            preferredItems={newItem.preferredItems}
+          />
+          <NewItemImagesView images={newItem.images} />
+          <SummaryView {...newItem} />
+        </ViewPager>
+        {isNavigationVisible ? (
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            {currentPageIndex == 0 ? null : (
+              <Button
+                appearance="ghost"
+                  size='giant'
+                  onPress={() => setCurrentPageIndex(currentPageIndex - 1)}
+                accessoryLeft={(props) => (
+                  <Icon {...props} name="chevron-left-outline"></Icon>
+                )}
+              >
+                Previous
+              </Button>
+            )}
+
+            {
+              // is summary page open
+              currentPageIndex == 4 ? (
+                <Button
+                  appearance="ghost"
+                  status="success"
+                  size='giant'
+                  accessoryRight={(props) => (
+                    <Icon {...props} name="checkmark-outline"></Icon>
+                  )}
+                >
+                  Submit
+                </Button>
+              ) : (
+                <Button
+                  style={{ marginLeft: "auto" }}
+                  appearance="ghost"
+                  size='giant'
+                  onPress={() => setCurrentPageIndex(currentPageIndex + 1)}
+                  accessoryRight={(props) => (
+                    <Icon {...props} name="chevron-right-outline"></Icon>
+                  )}
+                >
+                  Next
+                </Button>
+              )
+            }
+          </View>
+        ) : null}
+      </Layout>
+    </NewItemContext.Provider>
   );
 };
 

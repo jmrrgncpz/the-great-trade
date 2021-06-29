@@ -3,12 +3,14 @@ import {
   createStackNavigator,
   CardStyleInterpolators,
 } from "@react-navigation/stack";
+import { Image } from "react-native";
 import { Icon, OverflowMenu, MenuItem, Button } from "@ui-kitten/components";
 
 // Pages
 import ItemsView from "./ItemsView";
 import NewItemPage from "./NewItem/NewItemPage";
 import { AuthContext } from "../../AuthContext";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const HomeStack = createStackNavigator();
 const Home = () => {
@@ -23,6 +25,13 @@ const Home = () => {
       accessoryLeft={(props) => (
         <Icon {...props} fill="#000" name="more-vertical-outline" />
       )}
+    />
+  );
+
+  const CloseIcon = (props) => (
+    <Image
+      style={{ marginLeft: 12, width: 24, height: 24 }}
+      source={require("../../assets/icons/close-outline.png")}
     />
   );
 
@@ -55,9 +64,20 @@ const Home = () => {
       <HomeStack.Screen
         name="NewItemPage"
         component={NewItemPage}
-        options={{
-          cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
-          headerShown: false,
+        options={({ navigation }) => {
+          return {
+            title: "New Item",
+            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+            headerLeft: (props) => (
+              <TouchableOpacity
+                // TODO add action confirmation
+                // Item will not be saved. Continue?
+                onPress={() => navigation.navigate("ItemsViewPage")}
+              >
+                <CloseIcon />
+              </TouchableOpacity>
+            ),
+          };
         }}
       />
     </HomeStack.Navigator>

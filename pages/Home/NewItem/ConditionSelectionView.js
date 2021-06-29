@@ -2,39 +2,38 @@ import {
   Layout,
   Text,
   Button,
-  ButtonGroup,
-  StyleService,
   useTheme,
-  Icon,
 } from "@ui-kitten/components";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import FloatingMonitor from "../../../components/floating-monitor";
+import NewItemContext from "./new-item-context";
 
-const ConditionSelectionView = ({ navigation, route }) => {
+const conditions = [
+  {
+    text: "New",
+    status: "success",
+    value: 0,
+  },
+  {
+    text: "Used - Like New",
+    status: "info",
+    value: 1,
+  },
+  {
+    text: "Used - Good",
+    status: "warning",
+    value: 2,
+  },
+  {
+    text: "Used - Fair",
+    status: "danger",
+    value: 3,
+  },
+];
+
+const ConditionSelectionView = ({ condition }) => {
+  const setItemState = useContext(NewItemContext);
   const theme = useTheme();
-  const conditions = [
-    {
-      text: "New",
-      status: "success",
-      value: 0,
-    },
-    {
-      text: "Used - Like New",
-      status: "info",
-      value: 1,
-    },
-    {
-      text: "Used - Good",
-      status: "warning",
-      value: 2,
-    },
-    {
-      text: "Used - Fair",
-      status: "danger",
-      value: 3,
-    },
-  ];
-  const [selectedCondition, setSelectedCondition] = useState(conditions[0]);
 
   return (
     <Layout level="2" style={{ display: "flex", flex: 1, padding: 25 }}>
@@ -63,7 +62,7 @@ const ConditionSelectionView = ({ navigation, route }) => {
           }}
         >
           {conditions.map(({ text, status, value }) => {
-            const isConditionSelected = value == selectedCondition.value;
+            const isConditionSelected = value == condition.value;
 
             return (
               <Button
@@ -76,14 +75,18 @@ const ConditionSelectionView = ({ navigation, route }) => {
                     ? theme[`color-${status}-200`]
                     : "transparent",
                 }}
-                onPress={() => setSelectedCondition(conditions[value])}
+                onPress={() => setItemState({ condition: { text, status, value} })}
               >
                 <Text
                   style={{
+                    fontWeight: isConditionSelected
+                    ? '700'
+                    : '500',
                     color: isConditionSelected
                       ? theme[`color-${status}-700`]
                       : theme[`color-primary-default`],
                     fontSize: isConditionSelected ? 20 : 16,
+                    
                   }}
                 >
                   {text}
@@ -93,17 +96,6 @@ const ConditionSelectionView = ({ navigation, route }) => {
           })}
         </Layout>
       </Layout>
-
-      <Button
-        style={{ marginTop: "auto" }}
-        size="giant"
-        onPress={() => navigation.navigate("DetailsView", { ...route.params, condition: selectedCondition })}
-        accessoryRight={(props) => (
-          <Icon {...props} name="chevron-right-outline"></Icon>
-        )}
-      >
-        Next
-      </Button>
     </Layout>
   );
 };

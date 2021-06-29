@@ -21,13 +21,21 @@ import { ScrollView } from "react-native-gesture-handler";
 import PreferredItem from "../../../components/preferred-item";
 import PagerView from "react-native-pager-view";
 
-const Page = ({ navigation, route }) => {
+const Page = ({
+  condition,
+  name,
+  description,
+  category,
+  tags,
+  preferredItems,
+  images,
+}) => {
   const styles = useStyleSheet(themeStyles);
   const window = useWindowDimensions();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const onPageSelected = (e) => {
     setSelectedImageIndex(e.nativeEvent.position);
-  }
+  };
 
   return (
     <ScrollView>
@@ -46,7 +54,7 @@ const Page = ({ navigation, route }) => {
             showPageIndicator={true}
             onPageSelected={onPageSelected}
           >
-            {route.params.images.map((image, i) => (
+            {images.map((image, i) => (
               <View
                 key={`image-${i + 1}`}
                 style={{ justifyContent: "center", alignItems: "center" }}
@@ -73,26 +81,26 @@ const Page = ({ navigation, route }) => {
                 padding: 12,
               }}
             >
-             { selectedImageIndex + 1 } / {route.params.images.length}
+              { selectedImageIndex + 1 } / {images.length}
             </Text>
           )}
         </View>
 
         <View style={[styles.itemHeader, styles.stackItem]}>
           <View>
-            <Text category="h2">{route.params.itemName}</Text>
-            <Text category="c1">{route.params.category.name}</Text>
+            <Text category="h2">{name}</Text>
+            <Text category="c1">{category.name}</Text>
           </View>
           <View style={[styles.statusContainer]}>
             <Text category="c1" style={[styles.tag, styles.status]}>
-              {route.params.condition.text}
+              { condition.text }
             </Text>
           </View>
         </View>
 
         <View id="description-container" style={[styles.stackItem]}>
           <Text category="p1" style={[styles.description]}>
-            {route.params.itemDescription}
+            {description}
           </Text>
         </View>
 
@@ -100,7 +108,7 @@ const Page = ({ navigation, route }) => {
           id="tags-container"
           style={[styles.stackItem, styles.tagsContainer]}
         >
-          {route.params.tags.map((tag, i) => (
+          {tags.map((tag, i) => (
             <Text key={`summary-tag-${i}`} category="c1" style={[styles.tag]}>
               {tag}
             </Text>
@@ -118,20 +126,11 @@ const Page = ({ navigation, route }) => {
             id="preferred-items-list-container"
             style={[styles.preferredItemsListContainer]}
           >
-            {route.params.preferredItems.map((itemName, i) => (
+            {preferredItems.map((itemName, i) => (
               <PreferredItem key={`summary-preferred-item-${i}`} priorityNo={i} itemName={itemName} />
             ))}
           </View>
         </View>
-
-        <Button
-          status="success"
-          size="giant"
-          style={styles.submitButton}
-          onPress={() => navigation.navigate("ItemsViewPage")}
-        >
-          Submit
-        </Button>
       </Layout>
     </ScrollView>
   );
@@ -171,7 +170,6 @@ const themeStyles = StyleService.create({
     backgroundColor: ["color-success-default"],
   },
   description: {
-    letterSpacing: 1,
   },
   tagsContainer: {
     flexDirection: "row",
