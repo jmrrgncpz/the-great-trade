@@ -20,7 +20,7 @@ import PreferredItem from "../../../components/preferred-item";
 import NewItemContext from "./new-item-context";
 
 const Page = ({ tags, preferredItems }) => {
-  const setItemState = useContext(NewItemContext);
+  const {setItemState} = useContext(NewItemContext);
   const theme = useTheme();
   const styles = useStyleSheet(themedStyles);
 
@@ -57,6 +57,7 @@ const Page = ({ tags, preferredItems }) => {
                     status="control"
                     category="c1"
                     style={[styles.tag]}
+                    onPress={() => setItemState({ tags: tags.filter(t => t != tag)})}
                   >
                     {tag}
                   </Text>
@@ -88,9 +89,9 @@ const Page = ({ tags, preferredItems }) => {
                     itemName={preferredItem}
                     priorityNo={i}
                     removeFn={() => {
-                      setPreferredItems(
-                        preferredItems.filter((i) => i != preferredItem)
-                      );
+                      setItemState({
+                        preferredItems: preferredItems.filter((i) => i != preferredItem),
+                      });
                     }}
                   />
                 ))}

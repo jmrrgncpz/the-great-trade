@@ -9,20 +9,21 @@ import {
   useTheme,
 } from "@ui-kitten/components";
 import { View, Image, ScrollView } from "react-native";
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
 import NewItemContext from "./new-item-context";
 const NewItemImagesView = ({ images }) => {
-  const setItemState = useContext(NewItemContext)
+  const { setItemState } = useContext(NewItemContext);
   const styles = useStyleSheet(stylesheet);
   const [imagesContainerWidth, setImagesContainerWidth] = useState(0);
   const [imagesContainerHeight, setImagesContainerHeight] = useState(0);
 
   useEffect(() => {
     (async () => {
-      if (Platform.OS !== 'web') {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
+      if (Platform.OS !== "web") {
+        const { status } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
         }
       }
     })();
@@ -34,26 +35,26 @@ const NewItemImagesView = ({ images }) => {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,
-      allowsMultipleSelection: true
-    })
+      allowsMultipleSelection: true,
+    });
 
-    if(!result.cancelled){
+    if (!result.cancelled) {
       setItemState({ images: [...images, result] });
     }
-  }
+  };
 
   const launchCamera = async () => {
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      aspect: [1,1],
-      quality: 0.5
-    })
+      aspect: [1, 1],
+      quality: 0.5,
+    });
 
-    if (!result.cancelled){
+    if (!result.cancelled) {
       setItemState({ images: [...images, result] });
     }
-  }
+  };
 
   return (
     <Layout level="2" style={{ flex: 1 }}>
@@ -163,11 +164,11 @@ const stylesheet = StyleService.create({
   },
   imageContainer: {
     padding: 8,
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   image: {
-    resizeMode: 'contain',
+    resizeMode: "contain",
     width: "100%",
     height: "100%",
     borderRadius: 12,

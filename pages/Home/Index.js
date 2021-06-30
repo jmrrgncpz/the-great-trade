@@ -8,7 +8,7 @@ import { Icon, OverflowMenu, MenuItem, Button } from "@ui-kitten/components";
 
 // Pages
 import ItemsView from "./ItemsView";
-import NewItemPage from "./NewItem/NewItemPage";
+import NewItemPage from "./NewItem/NewItemView";
 import { AuthContext } from "../../AuthContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 

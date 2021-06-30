@@ -8,7 +8,7 @@ import {
   IndexPath,
   useTheme,
 } from "@ui-kitten/components";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useCallback, useEffect } from "react";
 import {
   View,
   Keyboard,
@@ -16,14 +16,12 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
 } from "react-native";
-import { categories } from "../../../categories";
+import { categories } from "../../../common";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import NewItemContext from "./new-item-context";
-const DetailsView = ({ name, description, category }) => {
-  const setItemState = useContext(NewItemContext)
+const DetailsView = ({ name, description }) => {
+  const { setItemState } = useContext(NewItemContext);
   const theme = useTheme();
-  // const [itemName, setItemName] = useState("");
-  // const [itemDescription, setItemDescription] = useState("");
 
   const [isNameHintVisible, setIsNameHintVisible] = useState(false);
   const [isDescriptionHintVisible, setIsDescriptionHintVisible] =
@@ -31,23 +29,33 @@ const DetailsView = ({ name, description, category }) => {
 
   const [nameInputStatus, setNameInputStatus] = useState("default");
   const [descriptionStatus, setDescriptionStatus] = useState("default");
+  const [selectedIndex, setSelectedIndex] = useState(null);
 
-  const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0, 0));
+  const onNameBlur = useCallback(
+    () => {
+      const isNameValid = name.length;
+      setNameInputStatus(isNameValid ? "success" : "danger");
+      setIsNameHintVisible(isNameValid ? false : true);
+    },
+    [name],
+  ) ;
 
-  const onNameBlur = () => {
-    const isNameValid = name.length;
-    setNameInputStatus(isNameValid ? "success" : "danger");
-    setIsNameHintVisible(isNameValid ? false : true);
-  };
+  const onDescriptionBlur = useCallback(
+    () => {
+      const isHintVisible = description.length < 5;
+      setIsDescriptionHintVisible(isHintVisible);
+      setDescriptionStatus(isHintVisible ? "danger" : "success");
+    },
+    [description],
+  )
 
-  const onDescriptionBlur = () => {
-    const isHintVisible = description.length < 5;
-    setIsDescriptionHintVisible(isHintVisible);
-    setDescriptionStatus(isHintVisible ? "danger" : "success");
-  };
+  const categoryDisplayValue = selectedIndex ?
+    categories[selectedIndex.section].subcategories[selectedIndex.row]
+    : null;
 
-  const categoryDisplayValue =
-    categories[selectedIndex.section].subcategories[selectedIndex.row];
+  useEffect(() => {
+    setItemState({ category: categoryDisplayValue });
+  }, [selectedIndex]);
 
   return (
     <TouchableWithoutFeedback
@@ -60,14 +68,13 @@ const DetailsView = ({ name, description, category }) => {
             accessibilityLabel="item name input"
             placeholder="Item name"
             value={name}
-            onChangeText={(newItemName) => setItemState({ name: newItemName})}
+            onChangeText={(newItemName) => setItemState({ name: newItemName })}
             status={nameInputStatus}
             onBlur={onNameBlur}
             textStyle={{
               fontSize: 36,
               fontFamily: "Montserrat-SemiBold",
               marginLeft: -9,
-              padding: 0,
               color: theme["color-info-default"],
             }}
             style={{
@@ -80,7 +87,11 @@ const DetailsView = ({ name, description, category }) => {
                 <Text status="danger" category="c1" appearance="hint">
                   Input an appropriate name.
                 </Text>
-              ) : <Text category="c1">What is this called? What brand and model?</Text>;
+              ) : (
+                <Text category="c1">
+                  What is this called? What brand and model?
+                </Text>
+              );
             }}
           />
 
@@ -89,9 +100,9 @@ const DetailsView = ({ name, description, category }) => {
               Category
             </Text>
             <Select
-              placeholder="Category"
+              placeholder="Select one"
               selectedIndex={selectedIndex}
-              value={categoryDisplayValue.name}
+              value={ categoryDisplayValue && categoryDisplayValue.name}
               onSelect={(index) => setSelectedIndex(index)}
               size="large"
             >

@@ -1,38 +1,11 @@
-import {
-  Layout,
-  Text,
-  Button,
-  useTheme,
-} from "@ui-kitten/components";
+import { Layout, Text, Button, useTheme } from "@ui-kitten/components";
 import React, { useState, useContext } from "react";
 import FloatingMonitor from "../../../components/floating-monitor";
 import NewItemContext from "./new-item-context";
-
-const conditions = [
-  {
-    text: "New",
-    status: "success",
-    value: 0,
-  },
-  {
-    text: "Used - Like New",
-    status: "info",
-    value: 1,
-  },
-  {
-    text: "Used - Good",
-    status: "warning",
-    value: 2,
-  },
-  {
-    text: "Used - Fair",
-    status: "danger",
-    value: 3,
-  },
-];
+import { conditions } from "../../../common";
 
 const ConditionSelectionView = ({ condition }) => {
-  const setItemState = useContext(NewItemContext);
+  const { setItemState } = useContext(NewItemContext);
   const theme = useTheme();
 
   return (
@@ -62,7 +35,7 @@ const ConditionSelectionView = ({ condition }) => {
           }}
         >
           {conditions.map(({ text, status, value }) => {
-            const isConditionSelected = value == condition.value;
+            const isConditionSelected = condition && value == condition.value;
 
             return (
               <Button
@@ -75,18 +48,17 @@ const ConditionSelectionView = ({ condition }) => {
                     ? theme[`color-${status}-200`]
                     : "transparent",
                 }}
-                onPress={() => setItemState({ condition: { text, status, value} })}
+                onPress={() =>
+                  setItemState({ condition: { text, status, value } })
+                }
               >
                 <Text
                   style={{
-                    fontWeight: isConditionSelected
-                    ? '700'
-                    : '500',
+                    fontWeight: isConditionSelected ? "700" : "500",
                     color: isConditionSelected
                       ? theme[`color-${status}-700`]
                       : theme[`color-primary-default`],
                     fontSize: isConditionSelected ? 20 : 16,
-                    
                   }}
                 >
                   {text}
