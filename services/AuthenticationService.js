@@ -1,8 +1,8 @@
-import * as firebase from "firebase";
 import "firebase/firestore";
 import * as Facebook from "expo-facebook";
 import Constants from 'expo-constants';
 import * as GoogleAuthentication from 'expo-google-app-auth'
+import firebase from "../firebase";
 
 export async function signOut() {
   return firebase.auth().signOut()
