@@ -69,11 +69,7 @@ const Home = () => {
             title: "New Item",
             cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
             headerLeft: (props) => (
-              <TouchableOpacity
-                // TODO add action confirmation
-                // Item will not be saved. Continue?
-                onPress={() => navigation.navigate("ItemsViewPage")}
-              >
+              <TouchableOpacity onPress={() => navigation.pop()}>
                 <CloseIcon />
               </TouchableOpacity>
             ),

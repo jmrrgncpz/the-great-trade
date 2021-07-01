@@ -6,7 +6,7 @@ import {
   Button,
   ButtonGroup,
 } from "@ui-kitten/components";
-import { View } from "react-native";
+import { Alert, BackHandler, View } from "react-native";
 import NewItemContext from "./new-item-context";
 import useKeyboardBehavior from "../../../custom-hooks/view-keyboard-behavior";
 
@@ -28,10 +28,32 @@ const initialState = {
   images: [],
 };
 
-const NewItemView = () => {
+const NewItemView = ({ navigation }) => {
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const [newItem, setNewItem] = useState(initialState);
   const [isDetailsComplete, setIsDetailsComplete] = useState(false);
+
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        e.preventDefault();
+
+        Alert.alert(
+          "Discard New Item",
+          "You're currently in a process of creating a new item. \n\n Your progress will not be saved.",
+          [
+            {
+              text: "Cancel",
+            },
+            {
+              text: "Discard Item",
+              onPress: () => navigation.dispatch(e.data.action),
+            },
+          ]
+        );
+      }),
+    [navigation]
+  );
 
   const setItemState = useCallback(
     (item) => {
