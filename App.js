@@ -27,6 +27,7 @@ import { registerIcons } from "./fontawesome";
 import * as SecureStore from "expo-secure-store";
 import { AuthContext, authState, reducer } from "./AuthContext";
 import { signOut } from "./services/AuthenticationService";
+import keys from "../config/keys";
 
 // Main Pages
 import Main from "./Main";
@@ -40,6 +41,9 @@ const RegistrationStack = createStackNavigator();
 const MainStack = createStackNavigator();
 
 export default function App() {
+  if (!firebase.apps.length) {
+    firebase.initializeApp(keys);
+  }
   const [fontsLoaded] = useFonts({
     "Montserrat-SemiBold": require("./assets/fonts/Montserrat-SemiBold.ttf"),
     "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
