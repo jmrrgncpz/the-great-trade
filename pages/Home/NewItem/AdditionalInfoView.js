@@ -90,7 +90,7 @@ const Page = ({ tags, preferredItems }) => {
                     priorityNo={i}
                     removeFn={() => {
                       setItemState({
-                        preferredItems: preferredItems.filter((i) => i != preferredItem),
+                        preferredItems: preferredItems.filter((i) => i != preferredItem)
                       });
                     }}
                   />
