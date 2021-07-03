@@ -10,10 +10,10 @@ import {
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import useKeyboardBehavior from "./custom-hooks/view-keyboard-behavior";
 // Tab Contents
-import Home from "./pages/Home/Index.js";
+import HomePage from "./pages/Home/HomePage.js";
 import Explore from "./pages/Explore/Explore.js";
 
-const HomeIcon = (props) => <Icon {...props} name="grid-outline" />;
+const HomeIcon = (props) => <Icon {...props} name="home-outline" />;
 const ExploreIcon = (props) => <Icon {...props} name="compass-outline" />;
 const TradeIcon = (props) => <Icon {...props} name="swap-outline" />;
 const { Navigator, Screen } = createBottomTabNavigator();
@@ -55,7 +55,7 @@ const Main = () => {
         )
       }
     >
-      <Screen name="Home" component={Home} />
+      <Screen name="Home" component={HomePage} />
       <Screen name="Explore" component={Explore} />
     </Navigator>
   );

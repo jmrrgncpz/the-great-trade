@@ -4,6 +4,10 @@ import Constants from 'expo-constants';
 import * as GoogleAuthentication from 'expo-google-app-auth'
 import firebase from "../firebase";
 
+export function getCurrentUser() {
+  return firebase.auth().currentUser;
+}
+
 export async function signOut() {
   return firebase.auth().signOut()
 }
@@ -41,11 +45,8 @@ export async function signInWithGoogleAsync() {
 }
 
 async function signInToFirebase(credential, token) {
-  const setPersistence = () => firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-  const signIn = () => firebase.auth().signInWithCredential(credential);
+  await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+  await firebase.auth().signInWithCredential(credential);
 
-  return Promise.all([setPersistence(), signIn()])
-  .then(() => {
-    return Promise.resolve({ type: 'success', token });
-  })
+  return { type: 'success', token }
 }

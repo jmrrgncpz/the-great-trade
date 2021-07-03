@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useReducer,
-  useMemo,
-} from "react";
+import React, { useState, useEffect, useReducer, useMemo } from "react";
 import {
   ApplicationProvider,
   IconRegistry,
@@ -27,7 +22,7 @@ import { registerIcons } from "./fontawesome";
 import * as SecureStore from "expo-secure-store";
 import { AuthContext, authState, reducer } from "./AuthContext";
 import { signOut } from "./services/AuthenticationService";
-
+import firebase from "./firebase";
 // Main Pages
 import Main from "./Main";
 
@@ -40,58 +35,38 @@ const RegistrationStack = createStackNavigator();
 const MainStack = createStackNavigator();
 
 export default function App() {
-  
+  const [isFBReady, setIsFBReady] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [fontsLoaded] = useFonts({
     "Montserrat-SemiBold": require("./assets/fonts/Montserrat-SemiBold.ttf"),
     "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
     "Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
   });
-  const [isFBReady, setIsFBReady] = useState(false);
 
   useEffect(() => {
     registerIcons();
+
+    // register firebase auth change observer
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setCurrentUser({
+          uid: user.uid,
+          name: user.displayName,
+        });
+      } else {
+        setCurrentUser(null);
+      }
+    });
+
     Facebook.initializeAsync({
       appId: "1039613316566966",
       appName: "The Great Trade",
     }).then(() => {
       setIsFBReady(true);
     });
-  }, []);
 
-  const [state, dispatch] = useReducer(reducer, authState);
-  const authContextValue = useMemo(() => ({
-    signIn: async (signInFn) => {
-      dispatch({ type: "SET_LOADING", isLoading: true });
-  
-      try {
-        const { token, type } = await signInFn();
-        await SecureStore.setItemAsync("userToken", token);
-  
-        dispatch({ type: "SIGN_IN", token });
-      } finally {
-        dispatch({ type: "SET_LOADING", isLoading: false });
-      }
-    },
-    signOut: async () => {
-      dispatch({ type: "SET_LOADING", isLoading: true });
-  
-      // set token null early
-      // to transition page immediately
-      // from secured page to landing
-      dispatch({ type: "SIGN_OUT" });
-  
-      // keep loading til
-      // signout from firebase
-      // and remove token in localstorage is done
-      Promise.all([signOut(), SecureStore.deleteItemAsync("userToken")]).then(
-        () => dispatch({ type: "SET_LOADING", isLoading: false })
-      );
-    },
-  }), []);
-
-  // Check if user is signed in, set
-  useEffect(() => {
-    dispatch({ type: 'SET_LOADING', isLoading: true })
+    // Check if user is signed in, set
+    dispatch({ type: "SET_LOADING", isLoading: true });
     SecureStore.getItemAsync("userToken")
       .then((token) => {
         if (token != null) {
@@ -102,9 +77,44 @@ export default function App() {
         console.log("Restore token failed");
       })
       .finally(() => {
-        dispatch({ type: 'SET_LOADING', isLoading: false })
+        dispatch({ type: "SET_LOADING", isLoading: false });
       });
   }, []);
+
+  const [state, dispatch] = useReducer(reducer, authState);
+  const authContextValue = useMemo(
+    () => ({
+      currentUser: currentUser,
+      signIn: async (signInFn) => {
+        dispatch({ type: "SET_LOADING", isLoading: true });
+        
+        try {
+          const { token, type } = await signInFn();
+          await SecureStore.setItemAsync("userToken", token);
+
+          dispatch({ type: "SIGN_IN", token });
+        } finally {
+          dispatch({ type: "SET_LOADING", isLoading: false });
+        }
+      },
+      signOut: async () => {
+        dispatch({ type: "SET_LOADING", isLoading: true });
+
+        // set token null early
+        // to transition page immediately
+        // from secured page to landing
+        dispatch({ type: "SIGN_OUT" });
+
+        // keep loading til
+        // signout from firebase
+        // and remove token in localstorage is done
+        Promise.all([signOut(), SecureStore.deleteItemAsync("userToken")]).then(
+          () => dispatch({ type: "SET_LOADING", isLoading: false })
+        );
+      },
+    }),
+    [currentUser]
+  );
 
   if (!fontsLoaded || !isFBReady) {
     return <AppLoading />;
@@ -138,14 +148,16 @@ export default function App() {
               <RegistrationStack.Navigator
                 screenOptions={{
                   headerShown: false,
-                  cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+                  cardStyleInterpolator:
+                    CardStyleInterpolators.forHorizontalIOS,
                 }}
               >
                 <RegistrationStack.Screen
                   name="Landing"
                   component={Landing}
                   options={{
-                    cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+                    cardStyleInterpolator:
+                      CardStyleInterpolators.forVerticalIOS,
                   }}
                 />
                 <RegistrationStack.Screen

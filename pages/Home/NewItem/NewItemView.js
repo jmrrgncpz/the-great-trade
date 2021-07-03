@@ -9,6 +9,7 @@ import {
 import { Alert, BackHandler, View } from "react-native";
 import NewItemContext from "./new-item-context";
 import useKeyboardBehavior from "../../../custom-hooks/view-keyboard-behavior";
+import { submitNewItemAsync } from "../../../services/ItemService";
 
 // Pages
 import ConditionSelectionView from "./ConditionSelectionView";
@@ -17,7 +18,6 @@ import AdditionalInfoView from "./AdditionalInfoView";
 import PhotoSelectorView from "./PhotoSelectorView";
 import SummaryView from "./SummaryView";
 import { useEffect } from "react/cjs/react.development";
-
 const initialState = {
   condition: null,
   category: null,
@@ -32,27 +32,31 @@ const NewItemView = ({ navigation }) => {
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const [newItem, setNewItem] = useState(initialState);
   const [isDetailsComplete, setIsDetailsComplete] = useState(false);
-
+  const [isItemSubmitted, setIsItemSubmitted] = useState(false);
   useEffect(
     () =>
       navigation.addListener("beforeRemove", (e) => {
         e.preventDefault();
 
-        Alert.alert(
-          "Discard New Item",
-          "You're currently in a process of creating a new item. \n\n Your progress will not be saved.",
-          [
-            {
-              text: "Cancel",
-            },
-            {
-              text: "Discard Item",
-              onPress: () => navigation.dispatch(e.data.action),
-            },
-          ]
-        );
+        if (!isItemSubmitted) {
+          Alert.alert(
+            "Discard New Item",
+            "You're currently in a process of creating a new item. \n\n Your progress will not be saved.",
+            [
+              {
+                text: "Cancel",
+              },
+              {
+                text: "Discard Item",
+                onPress: () => navigation.dispatch(e.data.action),
+              },
+            ]
+          );
+        } else {
+          navigation.dispatch(e.data.action);
+        }
       }),
-    [navigation]
+    [navigation, isItemSubmitted]
   );
 
   const setItemState = useCallback(
@@ -77,9 +81,22 @@ const NewItemView = ({ navigation }) => {
     }
   }, [newItem.name, newItem.category, newItem.description]);
 
+  // observe and wait isItemSubmitted flag to change then navigate back
+  useEffect(() => {
+    debugger;
+    if (isItemSubmitted) {
+      const uploadTask = submitNewItemAsync(newItem);
+      navigation.navigate("ItemsView", {
+        isItemSubmitted: true,
+        item: newItem,
+        uploadTask,
+      });
+    }
+  }, [isItemSubmitted]);
+
   return (
     <NewItemContext.Provider
-      value={{ setItemState, currentPageIndex, setCurrentPageIndex }}
+      value={{ setItemState, currentPageIndex, setCurrentPageIndex, setIsItemSubmitted }}
     >
       <Layout level="2" style={{ flex: 1 }}>
         <ViewPager
@@ -131,7 +148,8 @@ const Page = ({
   isNextSubmit = false,
   ...rest
 }) => {
-  const { currentPageIndex, setCurrentPageIndex } = useContext(NewItemContext);
+  const { currentPageIndex, setCurrentPageIndex, setIsItemSubmitted } =
+    useContext(NewItemContext);
   const [isNavigationVisible, setIsNavigationVisible] = useState(true);
 
   useKeyboardBehavior(
@@ -166,6 +184,7 @@ const Page = ({
                 accessoryRight={(props) => (
                   <Icon {...props} name="checkmark-outline"></Icon>
                 )}
+                onPress={() => setIsItemSubmitted(true)}
               >
                 Submit
               </Button>

@@ -34,6 +34,10 @@ export const categories = [
         icon: "couch",
       },
       {
+        name: 'Household',
+        icon: 'home'
+      },
+      {
         name: "Garden",
         icon: "seedling",
       },

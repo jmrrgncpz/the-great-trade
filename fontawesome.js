@@ -22,7 +22,8 @@ import {
   faCar,
   faGuitar,
   faCameraRetro,
-  faCube
+  faCube,
+  faHome
 } from "@fortawesome/free-solid-svg-icons";
 import { faLightbulb, faGem } from "@fortawesome/free-regular-svg-icons";
 
@@ -51,5 +52,6 @@ export const registerIcons = () =>
     faCameraRetro,
     faLightbulb,
     faGem,
-    faCube
+    faCube,
+    faHome
   );

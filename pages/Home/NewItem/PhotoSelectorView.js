@@ -36,6 +36,7 @@ const NewItemImagesView = ({ images }) => {
       aspect: [1, 1],
       quality: 0.5,
       allowsMultipleSelection: true,
+      base64: true
     });
 
     if (!result.cancelled) {
@@ -49,6 +50,7 @@ const NewItemImagesView = ({ images }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [1, 1],
       quality: 0.5,
+      base64: true
     });
 
     if (!result.cancelled) {

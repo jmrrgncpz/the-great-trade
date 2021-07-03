@@ -13,7 +13,7 @@ import { AuthContext } from "../../AuthContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const HomeStack = createStackNavigator();
-const Home = () => {
+const HomePage = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const { signOut } = useContext(AuthContext);
 
@@ -46,7 +46,7 @@ const Home = () => {
       }}
     >
       <HomeStack.Screen
-        name="ItemsViewPage"
+        name="ItemsView"
         component={ItemsView}
         options={{
           title: "The Great Trade",
@@ -62,7 +62,7 @@ const Home = () => {
         }}
       />
       <HomeStack.Screen
-        name="NewItemPage"
+        name="NewItemView"
         component={NewItemPage}
         options={({ navigation }) => {
           return {
@@ -80,4 +80,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

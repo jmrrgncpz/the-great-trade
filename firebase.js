@@ -6,3 +6,8 @@ if (!firebase.apps.length) {
 }
 
 export default firebase;
+
+const storage = firebase.storage();
+export const storageRef = storage.ref();
+
+export const db = firebase.firestore();
