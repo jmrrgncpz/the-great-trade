@@ -97,12 +97,20 @@ const ItemsList = ({ navigation, route, isSummary }) => {
               <Item key={item.id} {...item} style={{ marginBottom: 8 }} />
             ))}
 
-            {/* <List
-              style={styles.listContainer}
-              data={items}
-              renderItem={({ item }) => (
-              )}
-            /> */}
+            {isSummary ? (
+              <TouchableOpacity
+                style={styles.btnSeeAllOwnItemsContainer}
+                onPress={() => navigation.navigate("ItemsView")}
+              >
+                <Text
+                  category="p1"
+                  style={styles.btnSeeAllOwnItems}
+                  status="info"
+                >
+                  See all
+                </Text>
+              </TouchableOpacity>
+            ) : null }
           </>
         ) : (
           <Layout
@@ -150,5 +158,15 @@ const styleSheet = StyleService.create({
   newItemBtnIcon: {
     height: 24,
     width: 24,
+  },
+  btnSeeAllOwnItemsContainer: {
+    elevation: 2,
+    paddingVertical: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  btnSeeAllOwnItems: {
+    fontFamily: "Lato-Bold",
   },
 });

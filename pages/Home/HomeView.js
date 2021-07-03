@@ -38,18 +38,6 @@ export default function HomeView({ navigation, route }) {
               Your Items
             </Text>
             <ItemsList navigation={navigation} route={route} isSummary={true} />
-            <TouchableOpacity
-              style={styles.btnSeeAllOwnItemsContainer}
-              onPress={() => navigation.navigate("ItemsView")}
-            >
-              <Text
-                category="p1"
-                style={styles.btnSeeAllOwnItems}
-                status="info"
-              >
-                See all
-              </Text>
-            </TouchableOpacity>
           </View>
         </Layout>
       </ScrollView>
@@ -77,16 +65,6 @@ const styleSheet = StyleService.create({
   },
   yourItemsSection: {
     marginBottom: 24,
-  },
-  btnSeeAllOwnItemsContainer: {
-    elevation: 2,
-    paddingVertical: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
-  },
-  btnSeeAllOwnItems: {
-    fontFamily: "Lato-Bold",
   },
   tradeRequestTitle: {
     paddingHorizontal: 12,
