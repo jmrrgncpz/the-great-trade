@@ -15,17 +15,26 @@ export default function HomeView({ navigation, route }) {
     <Layout level="2" style={{ flex: 1 }}>
       <ScrollView style={styles.scrollContainer}>
         <Layout level="2" style={styles.styleSheet}>
-          <Text category="h2" style={styles.homeTitle}>
-            Home
-          </Text>
           <View style={styles.tradeRequestSection}>
-            <Text category="h3" style={styles.tradeRequestHeader}>
+            <Text category="h3" style={styles.tradeRequestTitle}>
               Trade Requests
             </Text>
-            <View></View>
+
+            <View>
+              <Text category="h4" style={styles.tradeRequestTitle}>
+                Incoming Requests
+              </Text>
+              <View></View>
+            </View>
+
+            <View>
+              <Text category="h4" style={styles.tradeRequestTitle}>
+                Sent Requests
+              </Text>
+            </View>
           </View>
           <View style={styles.yourItemsSection}>
-            <Text category="h3" style={styles.yourItemsHeader}>
+            <Text category="h3" style={styles.yourItemsTitle}>
               Your Items
             </Text>
             <ItemsList navigation={navigation} route={route} isSummary={true} />
@@ -63,7 +72,7 @@ const styleSheet = StyleService.create({
   tradeRequestSection: {
     marginBottom: 24,
   },
-  yourItemsHeader: {
+  yourItemsTitle: {
     paddingHorizontal: 12,
   },
   yourItemsSection: {
@@ -79,7 +88,7 @@ const styleSheet = StyleService.create({
   btnSeeAllOwnItems: {
     fontFamily: "Lato-Bold",
   },
-  tradeRequestHeader: {
+  tradeRequestTitle: {
     paddingHorizontal: 12,
   },
 });
