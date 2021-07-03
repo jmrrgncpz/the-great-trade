@@ -49,7 +49,7 @@ const ItemsList = ({ navigation, route }) => {
     if (route.params && route.params.isItemSubmitted) {
       debugger;
       const { item, uploadTask } = route.params;
-      setItems([...items, { ...item, uploadTask}]);
+      setItems([...items, { ...item, uploadTask }]);
     }
   }, [navigation, route]);
 
@@ -75,7 +75,7 @@ const ItemsList = ({ navigation, route }) => {
     <Layout level="2" style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainerStyle}>
         {items.length ? (
-          <View style={{ flex: 1 }}>
+          <>
             <View style={styles.itemsHeader}>
               <Text category="h2">Your items</Text>
               <TouchableOpacity
@@ -90,14 +90,17 @@ const ItemsList = ({ navigation, route }) => {
               </TouchableOpacity>
             </View>
 
-            <List
+            {items.map((item) => (
+              <Item key={item.id} {...item} style={{ marginBottom: 8 }} />
+            ))}
+
+            {/* <List
               style={styles.listContainer}
               data={items}
               renderItem={({ item }) => (
-                <Item key={item.id} {...item} style={{ marginBottom: 8 }} />
               )}
-            />
-          </View>
+            /> */}
+          </>
         ) : (
           <Layout
             style={{
@@ -128,9 +131,7 @@ export default ItemsList;
 
 const styleSheet = StyleService.create({
   scrollContainerStyle: {
-    flex: 1,
-    justifyContent: "center",
-    paddingVertical: 12,
+    paddingTop: 12,
   },
   itemsHeader: {
     marginBottom: 12,
