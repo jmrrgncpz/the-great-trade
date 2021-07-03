@@ -5,12 +5,13 @@ import {
 } from "@react-navigation/stack";
 import { Image } from "react-native";
 import { Icon, OverflowMenu, MenuItem, Button } from "@ui-kitten/components";
-
-// Pages
-import ItemsView from "./ItemsView";
-import NewItemPage from "./NewItem/NewItemView";
 import { AuthContext } from "../../AuthContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
+
+// Pages
+import HomeView from "./HomeView";
+import ItemsView from "./ItemsView";
+import NewItemPage from "./NewItem/NewItemView";
 
 const HomeStack = createStackNavigator();
 const HomePage = () => {
@@ -46,8 +47,8 @@ const HomePage = () => {
       }}
     >
       <HomeStack.Screen
-        name="ItemsView"
-        component={ItemsView}
+        name="HomeView"
+        component={HomeView}
         options={{
           title: "The Great Trade",
           headerRight: () => (
@@ -59,6 +60,13 @@ const HomePage = () => {
               <MenuItem title="Sign out" onPress={signOut} />
             </OverflowMenu>
           ),
+        }}
+      />
+      <HomeStack.Screen
+        name="ItemsView"
+        component={ItemsView}
+        options={{
+          title: "Your Items",
         }}
       />
       <HomeStack.Screen

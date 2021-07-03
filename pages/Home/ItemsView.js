@@ -16,12 +16,11 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { List } from "@ui-kitten/components";
 import Item from "../../components/item";
 import { getUserItems } from "../../services/ItemService";
 import { AuthContext } from "../../AuthContext";
 
-const ItemsList = ({ navigation, route }) => {
+const ItemsList = ({ navigation, route, isSummary }) => {
   const styles = useStyleSheet(styleSheet);
   const theme = useTheme();
   const [items, setItems] = useState([]);
@@ -34,6 +33,9 @@ const ItemsList = ({ navigation, route }) => {
       getUserItems(currentUser)
         .then((_items) => {
           if (_items) {
+            if (isSummary) {
+              _items = _items.slice(-3);
+            }
             setItems(_items);
           }
         })
@@ -46,8 +48,7 @@ const ItemsList = ({ navigation, route }) => {
   // new item observer
   useEffect(() => {
     // add an item if an item is submitted from NewItemView.js
-    if (route.params && route.params.isItemSubmitted) {
-      debugger;
+    if (route && route.params && route.params.isItemSubmitted) {
       const { item, uploadTask } = route.params;
       setItems([...items, { ...item, uploadTask }]);
     }
@@ -76,19 +77,21 @@ const ItemsList = ({ navigation, route }) => {
       <ScrollView contentContainerStyle={styles.scrollContainerStyle}>
         {items.length ? (
           <>
-            <View style={styles.itemsHeader}>
-              <Text category="h2">Your items</Text>
-              <TouchableOpacity
-                style={styles.newItemBtn}
-                onPress={navigateToNewItemView}
-              >
-                <Icon
-                  fill="#000"
-                  style={styles.newItemBtnIcon}
-                  name="plus-outline"
-                />
-              </TouchableOpacity>
-            </View>
+            {isSummary ? null : (
+              <View style={styles.itemsHeader}>
+                <Text category="h2">Your items</Text>
+                <TouchableOpacity
+                  style={styles.newItemBtn}
+                  onPress={navigateToNewItemView}
+                >
+                  <Icon
+                    fill="#000"
+                    style={styles.newItemBtnIcon}
+                    name="plus-outline"
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
 
             {items.map((item) => (
               <Item key={item.id} {...item} style={{ marginBottom: 8 }} />
