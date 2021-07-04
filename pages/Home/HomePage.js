@@ -21,13 +21,15 @@ const HomePage = () => {
 
   // Components
   const verticalMenu = () => (
-    <Button
-      appearance="ghost"
+    <TouchableNativeFeedback
+      style={{ padding: 12 }}
       onPress={() => setIsMenuVisible(!isMenuVisible)}
-      accessoryLeft={(props) => (
-        <Icon {...props} fill="#000" name="more-vertical-outline" />
-      )}
-    />
+      background={TouchableNativeFeedback.Ripple("rgba(0,0,0,0.2)", true)}
+    >
+      <View style={{ height: 24, width: 24 }}>
+        <Icon fill="black" name="more-vertical-outline" />
+      </View>
+    </TouchableNativeFeedback>
   );
 
   const CloseIcon = (props) => (
@@ -63,7 +65,7 @@ const HomePage = () => {
                 onPress={() => {
                   navigation.navigate({
                     name: "ItemsView",
-                    key: 'ItemsView' // set this to go back to ItemsView when navigate to ItemsView is called again
+                    key: "ItemsView", // set this to go back to ItemsView when navigate to ItemsView is called again
                   });
                 }}
               >
