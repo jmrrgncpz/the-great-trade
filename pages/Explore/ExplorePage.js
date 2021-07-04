@@ -31,12 +31,13 @@ export default function ExplorePage() {
           title: "Explore",
           headerRight: (props) => (
             <TouchableNativeFeedback
-              style={{ marginRight: 12 }}
+              style={{ padding: 12 }}
               background={TouchableNativeFeedback.Ripple(
                 "rgba(0,0,0,0.2)",
                 true
               )}
-              onPress={() => {}}
+              onPress={() => {
+              }}
             >
               <View style={styles.headerRightIcon}>
                 <Icon {...props} name="search-outline" fill="black" />

@@ -3,10 +3,11 @@ import {
   createStackNavigator,
   CardStyleInterpolators,
 } from "@react-navigation/stack";
-import { Image } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 import { Icon, OverflowMenu, MenuItem, Button } from "@ui-kitten/components";
 import { AuthContext } from "../../AuthContext";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { TouchableNativeFeedback } from "react-native-gesture-handler";
 
 // Pages
 import HomeView from "./HomeView";
@@ -49,17 +50,35 @@ const HomePage = () => {
       <HomeStack.Screen
         name="HomeView"
         component={HomeView}
-        options={{
-          title: "The Great Trade",
-          headerRight: () => (
-            <OverflowMenu
-              visible={isMenuVisible}
-              anchor={verticalMenu}
-              onBackdropPress={() => setIsMenuVisible(false)}
-            >
-              <MenuItem title="Sign out" onPress={signOut} />
-            </OverflowMenu>
-          ),
+        options={({ navigation }) => {
+          return {
+            title: "The Great Trade",
+            headerLeft: (props) => (
+              <TouchableNativeFeedback
+                style={{ padding: 12 }}
+                background={TouchableNativeFeedback.Ripple(
+                  "rgba(0,0,0,0.2)",
+                  true
+                )}
+                onPress={() => {
+                  navigation.navigate("ItemsView");
+                }}
+              >
+                <View style={{ height: 24, width: 24 }}>
+                  <Icon {...props} fill="black" name="cube-outline" />
+                </View>
+              </TouchableNativeFeedback>
+            ),
+            headerRight: () => (
+              <OverflowMenu
+                visible={isMenuVisible}
+                anchor={verticalMenu}
+                onBackdropPress={() => setIsMenuVisible(false)}
+              >
+                <MenuItem title="Sign out" onPress={signOut} />
+              </OverflowMenu>
+            ),
+          };
         }}
       />
       <HomeStack.Screen
