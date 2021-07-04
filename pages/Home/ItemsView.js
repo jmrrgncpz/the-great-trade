@@ -97,7 +97,7 @@ const ItemsList = ({ navigation, route, isSummary }) => {
               <Item key={item.id} {...item} style={{ marginBottom: 8 }} />
             ))}
 
-            {isSummary ? (
+            {isSummary && items.length > 3 ? (
               <TouchableOpacity
                 style={styles.btnSeeAllOwnItemsContainer}
                 onPress={() => navigation.navigate("ItemsView")}

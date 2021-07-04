@@ -11,7 +11,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import useKeyboardBehavior from "./custom-hooks/view-keyboard-behavior";
 // Tab Contents
 import HomePage from "./pages/Home/HomePage.js";
-import Explore from "./pages/Explore/Explore.js";
+import ExplorePage from "./pages/Explore/ExplorePage.js";
 
 const HomeIcon = (props) => <Icon {...props} name="home-outline" />;
 const ExploreIcon = (props) => <Icon {...props} name="compass-outline" />;
@@ -56,7 +56,7 @@ const Main = () => {
       }
     >
       <Screen name="Home" component={HomePage} />
-      <Screen name="Explore" component={Explore} />
+      <Screen name="Explore" component={ExplorePage} />
     </Navigator>
   );
 };

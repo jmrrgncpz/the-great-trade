@@ -83,7 +83,6 @@ const NewItemView = ({ navigation }) => {
 
   // observe and wait isItemSubmitted flag to change then navigate back
   useEffect(() => {
-    debugger;
     if (isItemSubmitted) {
       const uploadTask = submitNewItemAsync(newItem);
       navigation.navigate("ItemsView", {
