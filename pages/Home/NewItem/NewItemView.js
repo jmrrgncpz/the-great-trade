@@ -38,7 +38,9 @@ const NewItemView = ({ navigation }) => {
       navigation.addListener("beforeRemove", (e) => {
         e.preventDefault();
 
-        if (!isItemSubmitted) {
+        if (isItemSubmitted) {
+          navigation.dispatch(e.data.action);
+        } else {
           Alert.alert(
             "Discard New Item",
             "You're currently in a process of creating a new item. \n\n Your progress will not be saved.",
@@ -52,8 +54,6 @@ const NewItemView = ({ navigation }) => {
               },
             ]
           );
-        } else {
-          navigation.dispatch(e.data.action);
         }
       }),
     [navigation, isItemSubmitted]
@@ -85,17 +85,26 @@ const NewItemView = ({ navigation }) => {
   useEffect(() => {
     if (isItemSubmitted) {
       const uploadTask = submitNewItemAsync(newItem);
-      navigation.navigate("ItemsView", {
-        isItemSubmitted: true,
-        item: newItem,
-        uploadTask,
+      navigation.navigate({
+        name: "ItemsView",
+        key: "ItemsView",
+        params: {
+          isItemSubmitted: true,
+          item: newItem,
+          uploadTask,
+        },
       });
     }
   }, [isItemSubmitted]);
 
   return (
     <NewItemContext.Provider
-      value={{ setItemState, currentPageIndex, setCurrentPageIndex, setIsItemSubmitted }}
+      value={{
+        setItemState,
+        currentPageIndex,
+        setCurrentPageIndex,
+        setIsItemSubmitted,
+      }}
     >
       <Layout level="2" style={{ flex: 1 }}>
         <ViewPager

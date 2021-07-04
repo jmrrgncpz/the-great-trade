@@ -61,7 +61,10 @@ const HomePage = () => {
                   true
                 )}
                 onPress={() => {
-                  navigation.navigate("ItemsView");
+                  navigation.navigate({
+                    name: "ItemsView",
+                    key: 'ItemsView' // set this to go back to ItemsView when navigate to ItemsView is called again
+                  });
                 }}
               >
                 <View style={{ height: 24, width: 24 }}>
