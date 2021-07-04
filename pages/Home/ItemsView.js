@@ -77,22 +77,6 @@ const ItemsList = ({ navigation, route, isSummary }) => {
       <ScrollView contentContainerStyle={styles.scrollContainerStyle}>
         {items.length ? (
           <>
-            {isSummary ? null : (
-              <View style={styles.itemsHeader}>
-                <Text category="h2">Your items</Text>
-                <TouchableOpacity
-                  style={styles.newItemBtn}
-                  onPress={navigateToNewItemView}
-                >
-                  <Icon
-                    fill="#000"
-                    style={styles.newItemBtnIcon}
-                    name="plus-outline"
-                  />
-                </TouchableOpacity>
-              </View>
-            )}
-
             {items.map((item) => (
               <Item key={item.id} {...item} style={{ marginBottom: 8 }} />
             ))}
@@ -110,7 +94,17 @@ const ItemsList = ({ navigation, route, isSummary }) => {
                   See all
                 </Text>
               </TouchableOpacity>
-            ) : null }
+            ) : null}
+
+            {isSummary ? null : (
+              <Button
+                onPress={() => navigation.navigate("NewItemView")}
+                style={styles.roundAddBtn}
+                accessoryLeft={(props) => (
+                  <Icon {...props} name="plus-outline" />
+                )}
+              />
+            )}
           </>
         ) : (
           <Layout
@@ -168,5 +162,13 @@ const styleSheet = StyleService.create({
   },
   btnSeeAllOwnItems: {
     fontFamily: "Lato-Bold",
+  },
+  roundAddBtn: {
+    marginTop: 12,
+    alignSelf: "center",
+    elevation: 3,
+    borderRadius: 50,
+    width: 50,
+    height: 50,
   },
 });
