@@ -15,8 +15,6 @@ export default function Tag({ text, status, style: customStyle }) {
             ? theme[`color-${status}-default`]
             : theme["color-primary-default"],
           color: "white",
-          marginRight: 8,
-          marginBottom: 8,
         },
         customStyle
       ]}
