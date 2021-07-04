@@ -76,6 +76,10 @@ export const submitNewItemAsync = async ({ images, ...rest }) => {
   return imageUploadPromises;
 };
 
+export const deleteItemAsync = async (itemId) => {
+  db.collection('items').doc(itemId).delete();
+}
+
 const saveItemImages = (itemId, images) => {
   const itemFolder = storageRef.child(`item-images/${itemId}`);
 

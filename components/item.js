@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Text, StyleService, useStyleSheet } from "@ui-kitten/components";
-import { Image, View, TouchableOpacity } from "react-native";
+import { Image, View, TouchableOpacity, Pressable, Alert } from "react-native";
 import Tag from "./tag";
-import { getItemFirstImageURLAsync } from "../services/ItemService";
+import { getItemFirstImageURLAsync, deleteItemAsync } from "../services/ItemService";
 import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import useWindowDimensions from "react-native/Libraries/Utilities/useWindowDimensions";
 import { LinearGradient } from "expo-linear-gradient";
-
 export default function Item({
   name,
   description,
@@ -36,7 +35,19 @@ export default function Item({
     case "default":
       const defaultStyles = useStyleSheet(defaultStyleSheet);
       return (
-        <TouchableOpacity style={[customStyle, defaultStyles.container]}>
+        <Pressable
+          onLongPress={() =>
+            Alert.alert(
+              "Confirm deletion",
+              `Are you sure you want to delete ${name}?`,
+              [{ text: "Delete", style: "destructive", onPress: () => {
+                deleteItemAsync(id);
+              } }]
+            )
+          }
+          android_ripple={{ color: "rgba(0,0,0,0.2)" }}
+          style={[customStyle, defaultStyles.container]}
+        >
           <View
             elevation={3}
             style={{
@@ -73,7 +84,7 @@ export default function Item({
               </View>
             </View>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       );
     case "explore":
       const exploreStyles = useStyleSheet(exploreStyleSheet);
@@ -162,7 +173,7 @@ const defaultStyleSheet = StyleService.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    backgroundColor: "#ffffff",
+    backgroundColor: "transparent",
     overflow: "visible",
   },
   itemHeader: {
@@ -170,6 +181,7 @@ const defaultStyleSheet = StyleService.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
+    backgroundColor: "transparent",
   },
   category: {},
   headerLeft: {
@@ -200,6 +212,7 @@ const exploreStyleSheet = StyleService.create({
   },
   itemHeader: {
     marginBottom: 12,
+    backgroundColor: "transparent",
   },
   image: {
     borderRadius: 8,
