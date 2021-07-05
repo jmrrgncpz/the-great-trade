@@ -4,6 +4,7 @@ import { ActivityIndicator, ScrollView } from "react-native";
 import { getExploreItems } from "../../services/ItemService";
 import { AuthContext } from "../../AuthContext";
 import Item from "../../components/item";
+import itemViewVariants from "../../enums/item-view-variants";
 
 export default function ExploreView() {
   const theme = useTheme();
@@ -56,7 +57,7 @@ export default function ExploreView() {
                 key={item.id}
                 {...item}
                 style={{ marginBottom: 8 }}
-                variant="explore"
+                variant={itemViewVariants.explore}
               />
             ))}
           </ScrollView>

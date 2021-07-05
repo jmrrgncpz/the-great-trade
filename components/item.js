@@ -6,6 +6,8 @@ import { getItemFirstImageURLAsync, deleteItemAsync } from "../services/ItemServ
 import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import useWindowDimensions from "react-native/Libraries/Utilities/useWindowDimensions";
 import { LinearGradient } from "expo-linear-gradient";
+import itemViewVariants from '../enums/item-view-variants';
+
 export default function Item({
   name,
   description,
@@ -19,7 +21,7 @@ export default function Item({
   // will come from newly added item
   uploadTask,
   images,
-  variant = "default", // default | explore | view | select | offered
+  variant = itemViewVariants.default, // default | explore | view | select | offered
 }) {
   const window = useWindowDimensions();
   const [imageURL, setImageURL] = useState(null);
@@ -32,7 +34,7 @@ export default function Item({
   }, [id]);
 
   switch (variant) {
-    case "default":
+    case itemViewVariants.default:
       const defaultStyles = useStyleSheet(defaultStyleSheet);
       return (
         <Pressable
@@ -86,7 +88,7 @@ export default function Item({
           </View>
         </Pressable>
       );
-    case "explore":
+    case itemViewVariants.explore:
       const exploreStyles = useStyleSheet(exploreStyleSheet);
       return (
         <View
