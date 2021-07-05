@@ -22,7 +22,6 @@ const HomePage = () => {
   // Components
   const verticalMenu = () => (
     <TouchableNativeFeedback
-      style={{ padding: 12 }}
       onPress={() => setIsMenuVisible(!isMenuVisible)}
       background={TouchableNativeFeedback.Ripple("rgba(0,0,0,0.2)", true)}
     >
@@ -33,10 +32,15 @@ const HomePage = () => {
   );
 
   const CloseIcon = (props) => (
-    <Image
-      style={{ marginLeft: 12, width: 24, height: 24 }}
-      source={require("../../assets/icons/close-outline.png")}
-    />
+    <View style={{ marginLeft: 12 }}>
+      <TouchableNativeFeedback
+        background={TouchableNativeFeedback.Ripple("rgba(0,0,0,0.2)", true)}
+      >
+        <View style={{ height: 24, width: 24 }}>
+          <Icon fill="black" name="close-outline" />
+        </View>
+      </TouchableNativeFeedback>
+    </View>
   );
 
   return (
@@ -56,32 +60,35 @@ const HomePage = () => {
           return {
             title: "The Great Trade",
             headerLeft: (props) => (
-              <TouchableNativeFeedback
-                style={{ padding: 12 }}
-                background={TouchableNativeFeedback.Ripple(
-                  "rgba(0,0,0,0.2)",
-                  true
-                )}
-                onPress={() => {
-                  navigation.navigate({
-                    name: "ItemsView",
-                    key: "ItemsView", // set this to go back to ItemsView when navigate to ItemsView is called again
-                  });
-                }}
-              >
-                <View style={{ height: 24, width: 24 }}>
-                  <Icon {...props} fill="black" name="cube-outline" />
-                </View>
-              </TouchableNativeFeedback>
+              <View style={{ marginLeft: 12 }}>
+                <TouchableNativeFeedback
+                  background={TouchableNativeFeedback.Ripple(
+                    "rgba(0,0,0,0.2)",
+                    true
+                  )}
+                  onPress={() => {
+                    navigation.navigate({
+                      name: "ItemsView",
+                      key: "ItemsView", // set this to go back to ItemsView when navigate to ItemsView is called again
+                    });
+                  }}
+                >
+                  <View style={{ height: 24, width: 24 }}>
+                    <Icon {...props} fill="black" name="cube-outline" />
+                  </View>
+                </TouchableNativeFeedback>
+              </View>
             ),
             headerRight: () => (
-              <OverflowMenu
-                visible={isMenuVisible}
-                anchor={verticalMenu}
-                onBackdropPress={() => setIsMenuVisible(false)}
-              >
-                <MenuItem title="Sign out" onPress={signOut} />
-              </OverflowMenu>
+              <View style={{ marginRight: 12 }}>
+                <OverflowMenu
+                  visible={isMenuVisible}
+                  anchor={verticalMenu}
+                  onBackdropPress={() => setIsMenuVisible(false)}
+                >
+                  <MenuItem title="Sign out" onPress={signOut} />
+                </OverflowMenu>
+              </View>
             ),
           };
         }}

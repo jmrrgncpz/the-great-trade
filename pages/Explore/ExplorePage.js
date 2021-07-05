@@ -30,8 +30,8 @@ export default function ExplorePage() {
         options={{
           title: "Explore",
           headerRight: (props) => (
-            <TouchableNativeFeedback
-              style={{ padding: 12 }}
+            <View style={{marginRight: 12}}>
+              <TouchableNativeFeedback
               background={TouchableNativeFeedback.Ripple(
                 "rgba(0,0,0,0.2)",
                 true
@@ -43,6 +43,7 @@ export default function ExplorePage() {
                 <Icon {...props} name="search-outline" fill="black" />
               </View>
             </TouchableNativeFeedback>
+            </View>
           ),
         }}
       ></ExploreStack.Screen>
